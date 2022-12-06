@@ -155,9 +155,9 @@ class Profile extends StatelessWidget {
                           children: const [
                             Icon(Icons.edit),
                             Padding(padding: EdgeInsets.only(left: 2)),
-                            Text("Редактировать",
+                            Text("Edit",
                                 style: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 15,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold))
                           ]),
