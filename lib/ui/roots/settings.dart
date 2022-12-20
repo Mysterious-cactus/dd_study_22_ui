@@ -38,35 +38,32 @@ class _ViewModel extends ChangeNotifier {
 }
 
 class Settings extends StatelessWidget {
-  Settings({Key? key}) : super(key: key);
+  const Settings({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var viewModel = new _ViewModel(context: context);
+    var viewModel = _ViewModel(context: context);
     return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Color.fromARGB(255, 0, 117, 201),
-            title: const Text("Settings"),
-            actions: []),
+        appBar: AppBar(title: const Text("Settings"), actions: []),
         body: ListView(children: [
-          Padding(padding: const EdgeInsets.only(top: 2)),
+          const Padding(padding: EdgeInsets.only(top: 2)),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.lightBlue, width: 1),
+                    side: const BorderSide(width: 0),
                     borderRadius: BorderRadius.circular(10.0)),
-                backgroundColor: Color.fromARGB(255, 206, 239, 255)),
+                backgroundColor: Colors.white),
             onPressed: viewModel._logout,
             child: Row(
               children: [
                 IconButton(
-                    color: Color.fromARGB(255, 0, 117, 201),
+                    color: Colors.deepPurple,
                     icon: const Icon(Icons.exit_to_app),
                     onPressed: viewModel._logout),
-                Padding(padding: const EdgeInsets.only(left: 4)),
-                Text("Exit",
+                const Padding(padding: EdgeInsets.only(left: 4)),
+                const Text("Exit",
                     style: TextStyle(
                         fontSize: 16,
-                        color: Color.fromARGB(255, 0, 117, 201),
+                        color: Color.fromARGB(255, 65, 28, 130),
                         fontWeight: FontWeight.bold)),
               ],
             ),
@@ -77,7 +74,7 @@ class Settings extends StatelessWidget {
   static create() {
     return ChangeNotifierProvider(
       create: (BuildContext context) => _ViewModel(context: context),
-      child: Settings(),
+      child: const Settings(),
     );
   }
 }

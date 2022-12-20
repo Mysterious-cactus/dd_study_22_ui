@@ -1,4 +1,8 @@
-import '../models/refresh_token_request.dart';
+import 'dart:io';
+
+import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
+
+import '../models/post_model.dart';
 import '../models/token_response.dart';
 import '../models/user.dart';
 
@@ -7,4 +11,7 @@ abstract class ApiRepository {
       {required String login, required String password});
   Future<TokenResponse?> refreshToken(String refreshToken);
   Future<User?> getUser();
+  Future<List<PostModel>> getPosts(int skip, int take);
+  Future<List<AttachMeta>> uploadTemp({required List<File> files});
+  Future addAvatarToUser(AttachMeta model);
 }
