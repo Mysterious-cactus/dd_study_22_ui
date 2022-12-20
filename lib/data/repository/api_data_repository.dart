@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dd_study_22_ui/data/clients/api_client.dart';
 import 'package:dd_study_22_ui/data/clients/auth_client.dart';
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
+import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
+import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dd_study_22_ui/domain/models/refresh_token_request.dart';
 import 'package:dd_study_22_ui/domain/models/token_request.dart';
@@ -45,4 +47,10 @@ class ApiDataRepository extends ApiRepository {
 
   @override
   Future addAvatarToUser(AttachMeta model) => _api.addAvatarToUser(model);
+
+  @override
+  Future createUser(CreateUserModel model) => _auth.createUser(model);
+
+  @override
+  Future createPost(CreatePostRequest model) => _api.createPost(model);
 }

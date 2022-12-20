@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
+import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
+import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -26,4 +28,7 @@ abstract class ApiClient {
 
   @POST("/api/User/AddAvatarToUser")
   Future addAvatarToUser(@Body() AttachMeta model);
+
+  @POST("/api/Post/CreatePost")
+  Future createPost(@Body() CreatePostRequest model);
 }

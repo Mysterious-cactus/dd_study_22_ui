@@ -1,8 +1,10 @@
 import 'package:dd_study_22_ui/data/services/data_service.dart';
+import 'package:dd_study_22_ui/data/services/sync_service.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
+import 'package:dd_study_22_ui/ui/roots/post_creator.dart';
 import 'package:dd_study_22_ui/ui/roots/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -81,7 +83,7 @@ class AppViewModel extends ChangeNotifier {
       img.buffer.asUint8List(),
       fit: BoxFit.fill,
     );
-    //await SyncService().syncPosts();
+    await SyncService().syncPosts();
     posts = await _dataService.getPosts();
   }
 
@@ -95,6 +97,11 @@ class AppViewModel extends ChangeNotifier {
   void toProfile(BuildContext bc) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (__) => Profile.create(bc)));
+  }
+
+  void toPostCreator(BuildContext bc) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (__) => PostCreator.create(bc)));
   }
 }
 
@@ -248,7 +255,7 @@ class App extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FittedBox(
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () => viewModel.toPostCreator(context),
           child: const Icon(Icons.add),
         ),
       ),

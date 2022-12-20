@@ -1,6 +1,7 @@
 import 'package:dd_study_22_ui/ui/roots/app.dart';
 import 'package:dd_study_22_ui/ui/roots/auth.dart';
 import 'package:dd_study_22_ui/ui/roots/loader.dart';
+import 'package:dd_study_22_ui/ui/roots/register.dart';
 import 'package:dd_study_22_ui/ui/roots/settings.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,8 @@ class NavigationRoutes {
   static const app = "/app";
   static const profile = "/profile";
   static const userSettings = "/settings";
+  static const register = "/register";
+  static const postCreator = "/postCreator";
 }
 
 class AppNavigator {
@@ -25,6 +28,11 @@ class AppNavigator {
         ?.pushNamedAndRemoveUntil(NavigationRoutes.auth, ((route) => false));
   }
 
+  static Future toRegister() async {
+    return await key.currentState?.pushNamedAndRemoveUntil(
+        NavigationRoutes.register, ((route) => false));
+  }
+
   static Future toHome() async {
     return await key.currentState
         ?.pushNamedAndRemoveUntil(NavigationRoutes.app, ((route) => false));
@@ -32,6 +40,10 @@ class AppNavigator {
 
   static Future toProfile() async {
     return await key.currentState?.pushNamed(NavigationRoutes.profile);
+  }
+
+  static Future toPostCreator() async {
+    return await key.currentState?.pushNamed(NavigationRoutes.postCreator);
   }
 
   static Future toSettings() async {
@@ -50,6 +62,9 @@ class AppNavigator {
       case NavigationRoutes.userSettings:
         return PageRouteBuilder(
             pageBuilder: ((_, __, ___) => Settings.create()));
+      case NavigationRoutes.register:
+        return PageRouteBuilder(
+            pageBuilder: ((_, __, ___) => Register.create()));
     }
     return null;
   }

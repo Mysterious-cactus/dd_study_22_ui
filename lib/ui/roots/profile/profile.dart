@@ -152,7 +152,7 @@ class Profile extends StatelessWidget {
                                   children: [
                                     ListTile(
                                       leading: const Icon(
-                                        Icons.photo,
+                                        Icons.upload,
                                         color: Colors.deepPurple,
                                       ),
                                       title: const Text(
@@ -166,7 +166,7 @@ class Profile extends StatelessWidget {
                                       onTap: viewModel.changePhoto,
                                     ),
                                     ListTile(
-                                      leading: const Icon(Icons.download,
+                                      leading: const Icon(Icons.photo,
                                           color: Colors.deepPurple),
                                       title: const Text(
                                         "Open avatar in full screen",
