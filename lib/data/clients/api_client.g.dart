@@ -73,6 +73,32 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<List<ProfilePostModel>> getCurrentUserPosts() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio
+        .fetch<List<dynamic>>(_setStreamType<List<ProfilePostModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/Post/GetCurrentUserPosts',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map(
+            (dynamic i) => ProfilePostModel.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
+
+  @override
   Future<List<AttachMeta>> uploadTemp({required files}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

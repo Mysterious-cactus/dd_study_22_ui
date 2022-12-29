@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
@@ -32,6 +33,7 @@ class ProfileViewModel extends ChangeNotifier {
       img.buffer.asUint8List(),
       fit: BoxFit.fill,
     );
+    posts = await getPosts();
   }
 
   String? _imagePath;
@@ -40,6 +42,25 @@ class ProfileViewModel extends ChangeNotifier {
   set avatar(Image? val) {
     _avatar = val;
     notifyListeners();
+  }
+
+  List<ProfilePostModel>? _posts;
+  List<ProfilePostModel>? get posts => _posts;
+  set posts(List<ProfilePostModel>? val) {
+    _posts = val;
+    notifyListeners();
+  }
+
+  Map<int, int> pager = <int, int>{};
+
+  void onPageChanged(int listIndex, int pageIndex) {
+    pager[listIndex] = pageIndex;
+    notifyListeners();
+  }
+
+  Future<List<ProfilePostModel>> getPosts() async {
+    var p = await _api.getCurrentUserPosts();
+    return p;
   }
 
   Future changePhoto() async {

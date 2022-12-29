@@ -9,10 +9,13 @@ class Post implements DbModel {
   final String id;
   final String description;
   final String? authorId;
+  final DateTime created;
+
   Post({
     required this.id,
     required this.description,
     this.authorId,
+    required this.created,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
@@ -32,6 +35,7 @@ class Post implements DbModel {
       id: id ?? this.id,
       description: description ?? this.description,
       authorId: authorId ?? this.authorId,
+      created: created,
     );
   }
 }

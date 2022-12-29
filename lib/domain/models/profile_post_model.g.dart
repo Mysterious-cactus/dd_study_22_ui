@@ -1,25 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'post_model.dart';
+part of 'profile_post_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-PostModel _$PostModelFromJson(Map<String, dynamic> json) => PostModel(
+ProfilePostModel _$ProfilePostModelFromJson(Map<String, dynamic> json) =>
+    ProfilePostModel(
       id: json['id'] as String,
       description: json['description'] as String?,
-      author: User.fromJson(json['author'] as Map<String, dynamic>),
       contents: (json['contents'] as List<dynamic>)
           .map((e) => PostContent.fromJson(e as Map<String, dynamic>))
           .toList(),
       created: DateTime.parse(json['created'] as String),
     );
 
-Map<String, dynamic> _$PostModelToJson(PostModel instance) => <String, dynamic>{
+Map<String, dynamic> _$ProfilePostModelToJson(ProfilePostModel instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'description': instance.description,
-      'author': instance.author,
       'contents': instance.contents,
       'created': instance.created.toIso8601String(),
     };

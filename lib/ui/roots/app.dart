@@ -101,7 +101,7 @@ class AppViewModel extends ChangeNotifier {
 
   void toPostCreator(BuildContext bc) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (__) => PostCreator.create(bc)));
+        .push(MaterialPageRoute(builder: (__) => PostCreatorState.create(bc)));
   }
 }
 
@@ -115,6 +115,7 @@ class App extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     var itemCount = viewModel.posts?.length ?? 0;
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         //backgroundColor: Color.fromARGB(255, 0, 117, 201),
         leading: (viewModel.avatar != null)
@@ -132,123 +133,151 @@ class App extends StatelessWidget {
               ? const Center(child: CircularProgressIndicator())
               : Column(
                   children: [
-                    Expanded(
-                        child: ListView.separated(
-                      controller: viewModel._lvc,
-                      itemBuilder: (listContext, listIndex) {
-                        Widget res;
-                        var posts = viewModel.posts;
-                        if (posts != null) {
-                          var post = posts[listIndex];
-                          res = Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                //border: Border.all(width: 1),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5.0),
-                                )),
-                            padding: const EdgeInsets.all(10),
-                            height: screenWidth,
+                    (viewModel.posts!.isEmpty)
+                        ? Expanded(
                             child: Column(
-                              children: [
-                                Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Text("Nothing to show...",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Color.fromARGB(
+                                                255, 65, 28, 130),
+                                            fontWeight: FontWeight.bold)),
+                                    Padding(padding: EdgeInsets.only(left: 10)),
+                                    Icon(Icons.photo_library_outlined)
+                                  ])
+                            ],
+                          ))
+                        : Expanded(
+                            child: ListView.separated(
+                            controller: viewModel._lvc,
+                            itemBuilder: (listContext, listIndex) {
+                              Widget res;
+                              var posts = viewModel.posts;
+                              if (posts != null) {
+                                var post = posts[listIndex];
+                                res = Container(
+                                  decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      //border: Border.all(width: 1),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0),
+                                      )),
+                                  padding: const EdgeInsets.all(10),
+                                  height: screenWidth,
+                                  child: Column(
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.deepPurple,
-                                                width: 2),
-                                            borderRadius:
-                                                BorderRadius.circular(100)),
-                                        clipBehavior: Clip.hardEdge,
-                                        child: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              "$avatarUrl${post.author.avatarLink}"),
+                                      Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.deepPurple,
+                                                      width: 2),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100)),
+                                              clipBehavior: Clip.hardEdge,
+                                              child: CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    "$avatarUrl${post.author.avatarLink}"),
+                                              ),
+                                            ),
+                                            const Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 10)),
+                                            Text(
+                                              post.author.name,
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Color.fromARGB(
+                                                      255, 65, 28, 130),
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ]),
+                                      const Padding(
+                                          padding: EdgeInsets.only(top: 10)),
+                                      Expanded(
+                                        child: PageView.builder(
+                                          onPageChanged: (value) => viewModel
+                                              .onPageChanged(listIndex, value),
+                                          itemCount: post.contents.length,
+                                          itemBuilder:
+                                              (pageContext, pageIndex) =>
+                                                  Container(
+                                            //color: Colors.yellow,
+                                            child: Image(
+                                                image: NetworkImage(
+                                              "$avatarUrl${post.contents[pageIndex].contentLink}",
+                                            )),
+                                          ),
                                         ),
                                       ),
                                       const Padding(
-                                          padding: EdgeInsets.only(left: 10)),
-                                      Text(
-                                        post.author.name,
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Color.fromARGB(
-                                                255, 65, 28, 130),
-                                            fontWeight: FontWeight.bold),
-                                      )
-                                    ]),
-                                const Padding(
-                                    padding: EdgeInsets.only(top: 10)),
-                                Expanded(
-                                  child: PageView.builder(
-                                    onPageChanged: (value) => viewModel
-                                        .onPageChanged(listIndex, value),
-                                    itemCount: post.contents.length,
-                                    itemBuilder: (pageContext, pageIndex) =>
-                                        Container(
-                                      //color: Colors.yellow,
-                                      child: Image(
-                                          image: NetworkImage(
-                                        "$avatarUrl${post.contents[pageIndex].contentLink}",
-                                      )),
-                                    ),
-                                  ),
-                                ),
-                                const Padding(
-                                    padding: EdgeInsets.only(top: 10)),
-                                PageIndicator(
-                                  count: post.contents.length,
-                                  current: viewModel.pager[listIndex],
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 10, left: 15),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        post.description ?? "",
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Color.fromARGB(
-                                                255, 65, 28, 130),
-                                            fontWeight: FontWeight.bold),
-                                      )
+                                          padding: EdgeInsets.only(top: 10)),
+                                      PageIndicator(
+                                        count: post.contents.length,
+                                        current: viewModel.pager[listIndex],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 10, left: 15),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              post.description ?? "",
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color.fromARGB(
+                                                      255, 65, 28, 130),
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      const Padding(
+                                          padding: EdgeInsets.only(top: 10)),
+                                      const Divider(
+                                        color: Colors.deepPurple,
+                                        thickness: 1,
+                                        height: 1,
+                                      ),
+                                      SizedBox(
+                                        height: screenHeight * 0.05,
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              IconButton(
+                                                  onPressed: () {},
+                                                  icon: const Icon(
+                                                      Icons.favorite_outline)),
+                                              IconButton(
+                                                  onPressed: () {},
+                                                  icon: const Icon(
+                                                      Icons.comment_outlined))
+                                            ]),
+                                      ),
                                     ],
                                   ),
-                                ),
-                                const Padding(
-                                    padding: EdgeInsets.only(top: 10)),
-                                const Divider(
-                                  color: Colors.deepPurple,
-                                  thickness: 1,
-                                  height: 1,
-                                ),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                              Icons.favorite_outline)),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                              Icons.comment_outlined))
-                                    ]),
-                              ],
-                            ),
-                          );
-                        } else {
-                          res = const SizedBox.shrink();
-                        }
-                        return res;
-                      },
-                      separatorBuilder: (context, index) => const Divider(),
-                      itemCount: itemCount,
-                    )),
+                                );
+                              } else {
+                                res = const SizedBox.shrink();
+                              }
+                              return res;
+                            },
+                            separatorBuilder: (context, index) =>
+                                const Divider(),
+                            itemCount: itemCount,
+                          )),
                     if (viewModel.isLoading) const LinearProgressIndicator()
                   ],
                 )),

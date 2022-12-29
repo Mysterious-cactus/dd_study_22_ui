@@ -1,27 +1,24 @@
 import 'package:dd_study_22_ui/domain/models/post_content.dart';
-import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'post_model.g.dart';
+part 'profile_post_model.g.dart';
 
 @JsonSerializable()
-class PostModel {
+class ProfilePostModel {
   String id;
   String? description;
-  User author;
   List<PostContent> contents;
   DateTime created;
 
-  PostModel({
+  ProfilePostModel({
     required this.id,
     this.description,
-    required this.author,
     required this.contents,
     required this.created,
   });
 
-  factory PostModel.fromJson(Map<String, dynamic> json) =>
-      _$PostModelFromJson(json);
+  factory ProfilePostModel.fromJson(Map<String, dynamic> json) =>
+      _$ProfilePostModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PostModelToJson(this);
+  Map<String, dynamic> toJson() => _$ProfilePostModelToJson(this);
 }

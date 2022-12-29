@@ -1,3 +1,4 @@
+import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:dd_study_22_ui/domain/db_model.dart';
 
@@ -14,21 +15,23 @@ class User implements DbModel {
   //final int postCount;
   final String? region;
   final String? city;
+  //final List<ProfilePostModel>? posts;
   //final List<String>? subscriptions;
   //final List<String>? subscribers;
 
-  User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.birthDate,
-    required this.avatarLink,
-    //required this.postCount,
-    this.region,
-    this.city,
-    //required this.subscriptions,
-    //required this.subscribers,
-  });
+  User(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.birthDate,
+      required this.avatarLink,
+      //required this.postCount,
+      this.region,
+      this.city,
+      //this.posts
+      //required this.subscriptions,
+      //required this.subscribers,
+      });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

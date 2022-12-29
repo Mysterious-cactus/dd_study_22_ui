@@ -6,6 +6,7 @@ import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
 import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
+import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
 import 'package:dd_study_22_ui/domain/models/refresh_token_request.dart';
 import 'package:dd_study_22_ui/domain/models/token_request.dart';
 import 'package:dd_study_22_ui/domain/models/token_response.dart';
@@ -53,4 +54,8 @@ class ApiDataRepository extends ApiRepository {
 
   @override
   Future createPost(CreatePostRequest model) => _api.createPost(model);
+
+  @override
+  Future<List<ProfilePostModel>> getCurrentUserPosts() =>
+      _api.getCurrentUserPosts();
 }

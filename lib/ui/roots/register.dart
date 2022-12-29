@@ -106,7 +106,7 @@ class _ViewModel extends ChangeNotifier {
 
   DateTime selectedDate = DateTime.now();
 
-  Future<Null> _selectDate(BuildContext context) async {
+  Future _selectDate(BuildContext context) async {
     DateFormat formatter = DateFormat('dd/mm/yyyy');
     final DateTime? picked = await showDatePicker(
         context: context,
@@ -151,12 +151,10 @@ class Register extends StatelessWidget {
               //GestureDetector(
               //  onTap: () => viewModel._selectDate(context),
               //  child:
-              TextField(
-                controller: viewModel.birthTec,
-                //keyboardType: TextInputType.datetime,
-                decoration:
-                    const InputDecoration(hintText: "Enter Date of Birth"),
-              ),
+              InputDatePickerFormField(
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1901, 1),
+                  lastDate: DateTime(2023, 1)),
               TextField(
                   controller: viewModel.passwTec,
                   obscureText: true,

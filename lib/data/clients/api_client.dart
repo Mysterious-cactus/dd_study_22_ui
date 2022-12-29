@@ -4,6 +4,7 @@ import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
 import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
+import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -21,6 +22,9 @@ abstract class ApiClient {
   @GET("/api/Post/GetPosts")
   Future<List<PostModel>> getPosts(
       @Query("skip") int skip, @Query("take") int take);
+
+  @GET("/api/Post/GetCurrentUserPosts")
+  Future<List<ProfilePostModel>> getCurrentUserPosts();
 
   @POST("/api/Attach/UploadFiles")
   Future<List<AttachMeta>> uploadTemp(

@@ -1,5 +1,6 @@
 import 'package:dd_study_22_ui/data/services/auth_service.dart';
 import 'package:dd_study_22_ui/ui/app_navigator.dart';
+import 'package:dd_study_22_ui/ui/extensions/snack_bar_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -66,11 +67,14 @@ class _ViewModel extends ChangeNotifier {
             .then((value) => {state = state.copyWith(isLoading: false)});
       });
     } on NoNetworkException {
-      state = state.copyWith(errorText: "нет сети");
+      state = state.copyWith(errorText: "Нет сети");
+      context.removeAndShowSnackbar(state.errorText!);
     } on WrongCredentionalException {
-      state = state.copyWith(errorText: "не правильный логин или пароль");
+      state = state.copyWith(errorText: "Неправильный логин или пароль");
+      context.removeAndShowSnackbar(state.errorText!);
     } on ServerException {
-      state = state.copyWith(errorText: "произошла ошибка на сервере");
+      state = state.copyWith(errorText: "Произошла ошибка на сервере");
+      context.removeAndShowSnackbar(state.errorText!);
     }
   }
 }
@@ -119,8 +123,6 @@ class Auth extends StatelessWidget {
                 ),
                 if (viewModel.state.isLoading)
                   const CircularProgressIndicator(),
-                if (viewModel.state.errorText != null)
-                  Text(viewModel.state.errorText!)
               ],
             ),
           ),
