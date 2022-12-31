@@ -13,6 +13,7 @@ class NavigationRoutes {
   static const userSettings = "/settings";
   static const register = "/register";
   static const postCreator = "/postCreator";
+  static const search = "/search";
 }
 
 class AppNavigator {
@@ -44,6 +45,10 @@ class AppNavigator {
 
   static Future toPostCreator() async {
     return await key.currentState?.pushNamed(NavigationRoutes.postCreator);
+  }
+
+  static Future toSearch() async {
+    return await key.currentState?.pushNamed(NavigationRoutes.search);
   }
 
   static Future toSettings() async {

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dd_study_22_ui/data/services/auth_service.dart';
-import 'package:dd_study_22_ui/data/services/createPostService.dart';
+import 'package:dd_study_22_ui/data/services/create_post_service.dart';
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
@@ -146,19 +146,12 @@ class _ViewModel extends ChangeNotifier {
 }
 
 class PostCreatorState extends State<_PostCreator> {
-  int _count = 0;
-  void refreshAttachs(int itemCount) {
-    setState(() {
-      _count = itemCount;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     var viewModel = context.watch<_ViewModel>();
-    var itemCount = viewModel._imageFiles.length ?? 0;
+    var itemCount = viewModel._imageFiles.length;
     return Scaffold(
       extendBody: true,
       appBar: AppBar(

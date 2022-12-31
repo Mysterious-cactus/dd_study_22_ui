@@ -6,6 +6,7 @@ import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
 import 'package:dd_study_22_ui/ui/roots/post_creator.dart';
 import 'package:dd_study_22_ui/ui/roots/profile/profile.dart';
+import 'package:dd_study_22_ui/ui/roots/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -102,6 +103,11 @@ class AppViewModel extends ChangeNotifier {
   void toPostCreator(BuildContext bc) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (__) => PostCreatorState.create(bc)));
+  }
+
+  void toSearch(BuildContext bc) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (__) => Search.create()));
   }
 }
 
@@ -309,7 +315,9 @@ class App extends StatelessWidget {
               ),
               const Spacer(flex: 2),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  viewModel.toSearch(context);
+                },
                 icon: const Icon(
                   Icons.search,
                   color: Colors.white,

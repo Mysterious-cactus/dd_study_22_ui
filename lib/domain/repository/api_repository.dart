@@ -20,4 +20,5 @@ abstract class ApiRepository {
   Future createUser(CreateUserModel model);
   Future createPost(CreatePostRequest model);
   Future<List<ProfilePostModel>> getCurrentUserPosts();
+  Future<List<User>> getUsers();
 }

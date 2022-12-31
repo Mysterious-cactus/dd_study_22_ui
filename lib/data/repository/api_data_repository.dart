@@ -58,4 +58,7 @@ class ApiDataRepository extends ApiRepository {
   @override
   Future<List<ProfilePostModel>> getCurrentUserPosts() =>
       _api.getCurrentUserPosts();
+
+  @override
+  Future<List<User>> getUsers() => _api.getUsers();
 }

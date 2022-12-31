@@ -26,6 +26,9 @@ abstract class ApiClient {
   @GET("/api/Post/GetCurrentUserPosts")
   Future<List<ProfilePostModel>> getCurrentUserPosts();
 
+  @GET("/api/User/GetUsers")
+  Future<List<User>> getUsers();
+
   @POST("/api/Attach/UploadFiles")
   Future<List<AttachMeta>> uploadTemp(
       {@Part(name: "files") required List<File> files});

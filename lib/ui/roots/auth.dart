@@ -94,6 +94,11 @@ class Auth extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const Text("Sign In",
+                    style: TextStyle(
+                        fontSize: 22,
+                        color: Color.fromARGB(255, 65, 28, 130),
+                        fontWeight: FontWeight.bold)),
                 TextField(
                   controller: viewModel.loginTec,
                   decoration: const InputDecoration(hintText: "Enter Login"),
@@ -122,7 +127,9 @@ class Auth extends StatelessWidget {
                   onTap: AppNavigator.toRegister,
                 ),
                 if (viewModel.state.isLoading)
-                  const CircularProgressIndicator(),
+                  const Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: CircularProgressIndicator()),
               ],
             ),
           ),

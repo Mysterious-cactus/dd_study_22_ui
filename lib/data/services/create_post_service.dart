@@ -4,7 +4,6 @@ import 'package:dd_study_22_ui/data/services/auth_service.dart';
 import 'package:dd_study_22_ui/data/services/data_service.dart';
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
-import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/repository/api_repository.dart';
 import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
 import 'package:dio/dio.dart';
