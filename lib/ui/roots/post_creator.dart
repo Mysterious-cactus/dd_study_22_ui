@@ -6,7 +6,7 @@ import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
 import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
-import 'package:dd_study_22_ui/ui/app_navigator.dart';
+import 'package:dd_study_22_ui/ui/navigation/app_navigator.dart';
 import 'package:dd_study_22_ui/ui/common/cam_widget.dart';
 import 'package:dd_study_22_ui/ui/extensions/snack_bar_ext.dart';
 import 'package:flutter/material.dart';

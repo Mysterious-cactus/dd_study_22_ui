@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/services/auth_service.dart';
 import '../../domain/models/user.dart';
 import '../../internal/config/shared_prefs.dart';
 import '../../internal/config/token_storage.dart';
-import '../app_navigator.dart';
+import '../navigation/app_navigator.dart';
 
 class _ViewModel extends ChangeNotifier {
   BuildContext context;
@@ -34,6 +36,22 @@ class _ViewModel extends ChangeNotifier {
 
   void _logout() async {
     await _authService.logout().then((value) => AppNavigator.toLoader());
+  }
+
+  Future _deleteAppDir() async {
+    final appDir = await getApplicationSupportDirectory();
+
+    if (appDir.existsSync()) {
+      appDir.deleteSync(recursive: true);
+    }
+  }
+
+  Future _deleteCacheDir() async {
+    final cacheDir = await getTemporaryDirectory();
+
+    if (cacheDir.existsSync()) {
+      cacheDir.deleteSync(recursive: true);
+    }
   }
 }
 

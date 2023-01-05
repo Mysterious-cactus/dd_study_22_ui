@@ -48,6 +48,7 @@ dependencies:
   intl: ^0.17.0
   camera: ^0.10.0+5
   image_picker: ^0.8.6
+  flutter_cache_manager: ^3.3.0
 
 dev_dependencies:
   flutter_test:

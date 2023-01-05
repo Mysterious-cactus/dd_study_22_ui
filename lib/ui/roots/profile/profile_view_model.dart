@@ -7,6 +7,7 @@ import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
 import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
 import 'package:dd_study_22_ui/ui/common/cam_widget.dart';
 import 'package:dd_study_22_ui/ui/roots/app.dart';
+import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,10 @@ class ProfileViewModel extends ChangeNotifier {
   final BuildContext context;
   ProfileViewModel({required this.context}) {
     asyncInit();
+    var appmodel = context.read<AppViewModel>();
+    appmodel.addListener(() {
+      avatar = appmodel.avatar;
+    });
   }
   User? _user;
   User? get user => _user;
@@ -26,13 +31,6 @@ class ProfileViewModel extends ChangeNotifier {
 
   Future asyncInit() async {
     user = await SharedPrefs.getStoredUser();
-    var img =
-        await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
-            .load("$avatarUrl${user!.avatarLink}?v=1");
-    avatar = Image.memory(
-      img.buffer.asUint8List(),
-      fit: BoxFit.fill,
-    );
     posts = await getPosts();
   }
 
@@ -80,15 +78,16 @@ class ProfileViewModel extends ChangeNotifier {
       ),
     ));
     if (_imagePath != null) {
+      avatar = null;
       var t = await _api.uploadTemp(files: [File(_imagePath!)]);
       if (t.isNotEmpty) {
         await _api.addAvatarToUser(t.first);
 
         var img =
-            await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
-                .load("$avatarUrl${user!.avatarLink}?v=1");
+            await NetworkAssetBundle(Uri.parse("$baseUrl${user!.avatarLink}"))
+                .load("$baseUrl${user!.avatarLink}?v=1");
         var avImage = Image.memory(img.buffer.asUint8List());
-        avatar = avImage;
+
         appmodel.avatar = avImage;
       }
     }

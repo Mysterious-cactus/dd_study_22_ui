@@ -1,5 +1,5 @@
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
-import 'package:dd_study_22_ui/ui/roots/app.dart';
+import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
 import 'package:dd_study_22_ui/ui/roots/profile/profile_view_model.dart';
 import 'package:dd_study_22_ui/ui/roots/settings.dart';
 import 'package:flutter/material.dart';
@@ -157,6 +157,7 @@ class Profile extends StatelessWidget {
                         )),
                     onPressed: () {
                       showModalBottomSheet(
+                          useRootNavigator: true,
                           context: context,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -178,7 +179,10 @@ class Profile extends StatelessWidget {
                                               Color.fromARGB(255, 65, 28, 130),
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    onTap: viewModel.changePhoto,
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                      viewModel.changePhoto();
+                                    },
                                   ),
                                   ListTile(
                                     leading: const Icon(Icons.photo,
@@ -259,7 +263,7 @@ class Profile extends StatelessWidget {
                           ]),
                     const Padding(padding: EdgeInsets.only(left: 20)),
                     Column(children: [
-                      Text((0).toString(),
+                      Text((viewModel.user?.subscribers?.length).toString(),
                           style: const TextStyle(
                               fontSize: 16,
                               color: Color.fromARGB(255, 65, 28, 130),
@@ -272,7 +276,7 @@ class Profile extends StatelessWidget {
                     ]),
                     const Padding(padding: EdgeInsets.only(left: 20)),
                     Column(children: [
-                      Text((0).toString(),
+                      Text((viewModel.user?.subscriptions?.length).toString(),
                           style: const TextStyle(
                               fontSize: 16,
                               color: Color.fromARGB(255, 65, 28, 130),
@@ -336,8 +340,7 @@ class Profile extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(100)),
                                   clipBehavior: Clip.hardEdge,
                                   child: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        "$avatarUrl${viewModel.user!.avatarLink}"),
+                                    backgroundImage: viewModel.avatar?.image,
                                   ),
                                 ),
                                 const Padding(
@@ -426,58 +429,13 @@ class Profile extends StatelessWidget {
 
         //]),
       ]),
-      bottomNavigationBar: BottomAppBar(
-        //color: Color.fromARGB(255, 0, 117, 201),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            //vertical: 5,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.newspaper,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              ),
-              const Spacer(flex: 2),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-              ),
-              const Spacer(flex: 2),
-              IconButton(
-                icon: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              ),
-              const Spacer(flex: 2),
-              IconButton(
-                icon: const Icon(
-                  Icons.person,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              )
-            ],
-          ),
-        ),
-      ),
     );
   }
 
-  static create(BuildContext bc) {
+  static create() {
     return ChangeNotifierProvider(
       create: (context) {
-        return ProfileViewModel(context: bc);
+        return ProfileViewModel(context: context);
       },
       child: const Profile(),
     );

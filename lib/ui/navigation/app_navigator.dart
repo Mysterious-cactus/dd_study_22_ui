@@ -1,4 +1,5 @@
 import 'package:dd_study_22_ui/ui/roots/app.dart';
+import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
 import 'package:dd_study_22_ui/ui/roots/auth.dart';
 import 'package:dd_study_22_ui/ui/roots/loader.dart';
 import 'package:dd_study_22_ui/ui/roots/register.dart';
@@ -9,11 +10,9 @@ class NavigationRoutes {
   static const loaderWidget = "/";
   static const auth = "/auth";
   static const app = "/app";
-  static const profile = "/profile";
   static const userSettings = "/settings";
   static const register = "/register";
   static const postCreator = "/postCreator";
-  static const search = "/search";
 }
 
 class AppNavigator {
@@ -39,16 +38,8 @@ class AppNavigator {
         ?.pushNamedAndRemoveUntil(NavigationRoutes.app, ((route) => false));
   }
 
-  static Future toProfile() async {
-    return await key.currentState?.pushNamed(NavigationRoutes.profile);
-  }
-
   static Future toPostCreator() async {
     return await key.currentState?.pushNamed(NavigationRoutes.postCreator);
-  }
-
-  static Future toSearch() async {
-    return await key.currentState?.pushNamed(NavigationRoutes.search);
   }
 
   static Future toSettings() async {
