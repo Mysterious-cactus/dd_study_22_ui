@@ -1,3 +1,4 @@
+import 'package:dd_study_22_ui/domain/models/subscription_model.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
@@ -57,20 +58,77 @@ class _ViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<User> _showedUsers = [];
+  List<User> get showedUsers => _showedUsers;
+  set showedUsers(List<User> val) {
+    _showedUsers = val;
+    notifyListeners();
+  }
+
   //List<User> allUsers = [];
 
   Future asyncInit() async {
     user = await SharedPrefs.getStoredUser();
     allUsers = await _api.getUsers();
+    if (allUsers != null) {
+      showedUsers = allUsers!;
+    }
+  }
+
+  Future subscribe(String onWhom) async {
+    if (user!.subscriptions != null) {
+      user!.subscriptions!.add(onWhom);
+      await _api.subscribe(onWhom);
+    }
+  }
+
+  Future unSubscribe(String fromWhom) async {
+    if (user!.subscriptions != null) {
+      user!.subscriptions!.remove(fromWhom);
+      await _api.unSubscribe(fromWhom);
+    }
+  }
+
+  bool checkSubscription(String onWhom) {
+    if (user!.subscriptions != null) {
+      return user!.subscriptions!.contains(onWhom);
+    } else {
+      return false;
+    }
+  }
+
+  void search(String str) {
+    if (allUsers != null) {
+      if (str.isNotEmpty) {
+        showedUsers = [];
+        for (var user in allUsers!) {
+          if (user.name.contains(str)) {
+            showedUsers.add(user);
+          }
+        }
+      } else {
+        showedUsers = allUsers!;
+      }
+    }
   }
 }
 
-class Search extends StatelessWidget {
-  const Search({Key? key}) : super(key: key);
+class _Search extends StatefulWidget {
+  const _Search({
+    Key? key,
+  }) : super(key: key);
 
+  @override
+  SearchState createState() => SearchState();
+}
+
+class SearchState extends State<_Search> {
+  String text = " ";
+  bool updated = false;
   @override
   Widget build(BuildContext context) {
     var viewModel = context.watch<_ViewModel>();
+    updated = false;
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.symmetric(
@@ -80,6 +138,7 @@ class Search extends StatelessWidget {
       child: SafeArea(
           child: ListView(children: [
         TextField(
+          onChanged: viewModel.search,
           controller: viewModel.searchTec,
           textAlignVertical: const TextAlignVertical(y: 1),
           decoration: InputDecoration(
@@ -94,12 +153,14 @@ class Search extends StatelessWidget {
           ),
         ),
         const Padding(padding: EdgeInsets.only(top: 20)),
-        (viewModel._allUsers != null)
+        (viewModel.showedUsers.isNotEmpty)
             ? ListView.separated(
                 physics: const ScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (listContext, listIndex) {
                   Widget res;
+                  var user = viewModel.showedUsers[listIndex];
+                  bool check = viewModel.checkSubscription(user.id);
                   res = Container(
                     decoration: const BoxDecoration(
                         color: Colors.white,
@@ -114,10 +175,10 @@ class Search extends StatelessWidget {
                           child: Row(children: [
                             CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    "$avatarUrl${viewModel._allUsers![listIndex].avatarLink}")),
+                                    "$avatarUrl${user.avatarLink}")),
                             const Padding(padding: EdgeInsets.only(left: 10)),
                             Text(
-                              viewModel._allUsers![listIndex].name,
+                              user.name,
                               style: const TextStyle(
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 65, 28, 130),
@@ -131,29 +192,55 @@ class Search extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 ElevatedButton(
-                                  child: const Text("Follow"),
-                                  onPressed: () {},
+                                  child: Text((updated)
+                                      ? text
+                                      : (check ? "Unfollow" : "Follow")),
+                                  onPressed: () {
+                                    if (check) {
+                                      viewModel.unSubscribe(
+                                          viewModel.showedUsers[listIndex].id);
+                                      setState(() {
+                                        text = "Follow";
+                                      });
+                                      updated = true;
+                                    } else {
+                                      viewModel.subscribe(
+                                          viewModel.showedUsers[listIndex].id);
+                                      setState(() {
+                                        text = "Unfollow";
+                                      });
+                                      updated = true;
+                                    }
+                                  },
                                 ),
                               ]),
                         ),
                       ],
                     ),
                   );
+
                   return res;
                 },
                 separatorBuilder: (context, index) =>
                     const Padding(padding: EdgeInsets.only(top: 10)),
-                itemCount: viewModel.allUsers!.length,
+                itemCount: viewModel.showedUsers.length,
               )
-            : const Center(
-                child: CircularProgressIndicator(),
-              ),
+            : (viewModel.state.search != null)
+                ? const Center(
+                    child: Text("No users found... ",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Color.fromARGB(255, 65, 28, 130),
+                            fontWeight: FontWeight.bold)))
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  ),
       ])),
     ));
   }
 
   static Widget create() => ChangeNotifierProvider<_ViewModel>(
         create: (context) => _ViewModel(context: context),
-        child: const Search(),
+        child: const _Search(),
       );
 }

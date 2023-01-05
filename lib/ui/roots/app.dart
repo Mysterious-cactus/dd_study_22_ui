@@ -107,7 +107,7 @@ class AppViewModel extends ChangeNotifier {
 
   void toSearch(BuildContext bc) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (__) => Search.create()));
+        .push(MaterialPageRoute(builder: (__) => SearchState.create()));
   }
 }
 

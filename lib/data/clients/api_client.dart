@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
-import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
+import 'package:dd_study_22_ui/domain/models/subscription_model.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -38,4 +38,10 @@ abstract class ApiClient {
 
   @POST("/api/Post/CreatePost")
   Future createPost(@Body() CreatePostRequest model);
+
+  @POST("/api/Subscription/Subscribe")
+  Future subscribe(@Query("onWhom") String onWhom);
+
+  @POST("/api/Subscription/UnSubscribe")
+  Future unSubscribe(@Query("fromWhom") String fromWhom);
 }

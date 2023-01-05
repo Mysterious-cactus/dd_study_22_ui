@@ -41,7 +41,6 @@ class AuthService {
       var user = await _api.getUser();
       if (user != null) {
         await SharedPrefs.setStoredUser(user);
-        await _dataService.cuUser(user);
       }
       res = true;
     }

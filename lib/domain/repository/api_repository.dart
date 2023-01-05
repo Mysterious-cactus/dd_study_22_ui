@@ -4,6 +4,7 @@ import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
 import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
+import 'package:dd_study_22_ui/domain/models/subscription_model.dart';
 
 import '../models/post_model.dart';
 import '../models/token_response.dart';
@@ -21,4 +22,6 @@ abstract class ApiRepository {
   Future createPost(CreatePostRequest model);
   Future<List<ProfilePostModel>> getCurrentUserPosts();
   Future<List<User>> getUsers();
+  Future subscribe(String onWhom);
+  Future unSubscribe(String fromWhom);
 }

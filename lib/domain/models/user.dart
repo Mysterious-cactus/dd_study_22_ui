@@ -16,22 +16,22 @@ class User implements DbModel {
   final String? region;
   final String? city;
   //final List<ProfilePostModel>? posts;
-  //final List<String>? subscriptions;
-  //final List<String>? subscribers;
+  List<String>? subscriptions;
+  List<String>? subscribers;
 
-  User(
-      {required this.id,
-      required this.name,
-      required this.email,
-      required this.birthDate,
-      required this.avatarLink,
-      //required this.postCount,
-      this.region,
-      this.city,
-      //this.posts
-      //required this.subscriptions,
-      //required this.subscribers,
-      });
+  User({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.birthDate,
+    required this.avatarLink,
+    //required this.postCount,
+    this.region,
+    this.city,
+    //this.posts
+    this.subscriptions,
+    this.subscribers,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
@@ -52,7 +52,9 @@ class User implements DbModel {
         other.birthDate == birthDate &&
         other.avatarLink == avatarLink &&
         other.region == region &&
-        other.city == city;
+        other.city == city &&
+        other.subscribers == subscribers &&
+        other.subscriptions == subscriptions;
   }
 
   @override
@@ -63,6 +65,8 @@ class User implements DbModel {
         birthDate.hashCode ^
         avatarLink.hashCode ^
         region.hashCode ^
-        city.hashCode;
+        city.hashCode ^
+        subscribers.hashCode ^
+        subscriptions.hashCode;
   }
 }

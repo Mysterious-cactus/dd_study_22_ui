@@ -6,6 +6,8 @@ CREATE TABLE t_User(
 	,avatarLink			TEXT
     ,region             TEXT
     ,city               TEXT
+	,subscriptions		BLOB NULL
+	,subscribers		BLOB NULL
 );
 CREATE TABLE t_Post(
 	id					TEXT NOT NULL PRIMARY KEY

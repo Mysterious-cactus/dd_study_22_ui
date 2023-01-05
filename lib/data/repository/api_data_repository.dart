@@ -8,6 +8,7 @@ import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
 import 'package:dd_study_22_ui/domain/models/refresh_token_request.dart';
+import 'package:dd_study_22_ui/domain/models/subscription_model.dart';
 import 'package:dd_study_22_ui/domain/models/token_request.dart';
 import 'package:dd_study_22_ui/domain/models/token_response.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
@@ -61,4 +62,10 @@ class ApiDataRepository extends ApiRepository {
 
   @override
   Future<List<User>> getUsers() => _api.getUsers();
+
+  @override
+  Future subscribe(String onWhom) => _api.subscribe(onWhom);
+
+  @override
+  Future unSubscribe(String fromWhom) => _api.unSubscribe(fromWhom);
 }

@@ -14,6 +14,12 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       avatarLink: json['avatarLink'] as String,
       region: json['region'] as String?,
       city: json['city'] as String?,
+      subscriptions: (json['subscriptions'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      subscribers: (json['subscribers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -24,4 +30,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'avatarLink': instance.avatarLink,
       'region': instance.region,
       'city': instance.city,
+      'subscriptions': instance.subscriptions,
+      'subscribers': instance.subscribers,
     };
