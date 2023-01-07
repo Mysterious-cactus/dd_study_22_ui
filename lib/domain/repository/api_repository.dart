@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
+import 'package:dd_study_22_ui/domain/models/comment_model.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
 import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
-import 'package:dd_study_22_ui/domain/models/subscription_model.dart';
-
 import '../models/post_model.dart';
 import '../models/token_response.dart';
 import '../models/user.dart';
@@ -24,4 +23,7 @@ abstract class ApiRepository {
   Future<List<User>> getUsers();
   Future subscribe(String onWhom);
   Future unSubscribe(String fromWhom);
+  Future<User> getUserById(String userId);
+  Future<PostModel> getPostById(String postId);
+  Future createComment(CommentModel model);
 }

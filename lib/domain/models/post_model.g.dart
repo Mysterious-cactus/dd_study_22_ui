@@ -14,6 +14,10 @@ PostModel _$PostModelFromJson(Map<String, dynamic> json) => PostModel(
           .map((e) => PostContent.fromJson(e as Map<String, dynamic>))
           .toList(),
       created: DateTime.parse(json['created'] as String),
+      comments: (json['comments'] as List<dynamic>?)
+          ?.map(
+              (e) => GetCommentRequestModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$PostModelToJson(PostModel instance) => <String, dynamic>{
@@ -21,5 +25,6 @@ Map<String, dynamic> _$PostModelToJson(PostModel instance) => <String, dynamic>{
       'description': instance.description,
       'author': instance.author,
       'contents': instance.contents,
+      'comments': instance.comments,
       'created': instance.created.toIso8601String(),
     };

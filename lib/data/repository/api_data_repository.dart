@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dd_study_22_ui/data/clients/api_client.dart';
 import 'package:dd_study_22_ui/data/clients/auth_client.dart';
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
+import 'package:dd_study_22_ui/domain/models/comment_model.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
 import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
@@ -68,4 +69,13 @@ class ApiDataRepository extends ApiRepository {
 
   @override
   Future unSubscribe(String fromWhom) => _api.unSubscribe(fromWhom);
+
+  @override
+  Future<User> getUserById(String userId) => _api.getUserById(userId);
+
+  @override
+  Future<PostModel> getPostById(String postId) => _api.getPostById(postId);
+
+  @override
+  Future createComment(CommentModel model) => _api.createComment(model);
 }

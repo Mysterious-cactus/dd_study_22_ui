@@ -1,3 +1,6 @@
+import 'package:dd_study_22_ui/data/services/database.dart';
+import 'package:dd_study_22_ui/domain/models/post.dart';
+import 'package:dd_study_22_ui/domain/models/post_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
@@ -35,6 +38,9 @@ class _ViewModel extends ChangeNotifier {
   }
 
   void _logout() async {
+    DB.instance.cleanTable<Post>();
+    DB.instance.cleanTable<PostContent>();
+    DB.instance.cleanTable<User>();
     await _authService.logout().then((value) => AppNavigator.toLoader());
   }
 

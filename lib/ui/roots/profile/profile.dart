@@ -1,4 +1,5 @@
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
+import 'package:dd_study_22_ui/ui/roots/app.dart';
 import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
 import 'package:dd_study_22_ui/ui/roots/profile/profile_view_model.dart';
 import 'package:dd_study_22_ui/ui/roots/settings.dart';
@@ -13,6 +14,8 @@ class Profile extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     var viewModel = context.watch<ProfileViewModel>();
+    var appmodel = context.read<AppViewModel>();
+    // viewModel.appmodel = context.read<AppViewModel>();
     return Scaffold(
       appBar: AppBar(
           //backgroundColor: Color.fromARGB(255, 0, 117, 201),
@@ -148,13 +151,18 @@ class Profile extends StatelessWidget {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               SizedBox(
                   width: screenWidth - 40,
-                  child: FloatingActionButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        side: const BorderSide(
-                          width: 1,
-                          //color: Color.fromARGB(255, 0, 117, 201))),
-                        )),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          side: const BorderSide(
+                            width: 1,
+                            //color: Color.fromARGB(255, 0, 117, 201))),
+                          ),
+                        ),
+                      ),
+                    ),
                     onPressed: () {
                       showModalBottomSheet(
                           useRootNavigator: true,
@@ -247,10 +255,10 @@ class Profile extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    (viewModel.posts == null)
+                    (appmodel.posts == null)
                         ? const Center(child: CircularProgressIndicator())
                         : Column(children: [
-                            Text((viewModel.posts!.length).toString(),
+                            Text((appmodel.posts!.length).toString(),
                                 style: const TextStyle(
                                     fontSize: 16,
                                     color: Color.fromARGB(255, 65, 28, 130),
@@ -306,7 +314,7 @@ class Profile extends StatelessWidget {
             ],
           ),
         ),
-        (viewModel.posts == null || viewModel.user == null)
+        (appmodel.posts == null || viewModel.user == null)
             ? const Center(child: CircularProgressIndicator())
             : //Column(children: [
             ListView.separated(
@@ -315,8 +323,7 @@ class Profile extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (listContext, listIndex) {
                   Widget res;
-                  viewModel.getPosts();
-                  var posts = viewModel.posts;
+                  var posts = appmodel.posts;
                   if (posts != null) {
                     var post = posts[listIndex];
                     res = Container(
@@ -423,8 +430,7 @@ class Profile extends StatelessWidget {
                   return res;
                 },
                 separatorBuilder: (context, index) => const Divider(),
-                itemCount:
-                    viewModel.posts == null ? 1 : viewModel.posts!.length,
+                itemCount: appmodel.posts == null ? 1 : appmodel.posts!.length,
               ),
 
         //]),

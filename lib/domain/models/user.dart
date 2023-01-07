@@ -11,7 +11,7 @@ class User implements DbModel {
   final String name;
   final String email;
   final DateTime birthDate;
-  final String avatarLink;
+  final String? avatarLink;
   //final int postCount;
   final String? region;
   final String? city;
@@ -24,7 +24,7 @@ class User implements DbModel {
     required this.name,
     required this.email,
     required this.birthDate,
-    required this.avatarLink,
+    this.avatarLink,
     //required this.postCount,
     this.region,
     this.city,

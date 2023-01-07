@@ -1,8 +1,12 @@
+import 'package:dd_study_22_ui/data/services/database.dart';
+import 'package:dd_study_22_ui/domain/models/post.dart';
+import 'package:dd_study_22_ui/domain/models/post_content.dart';
 import 'package:dd_study_22_ui/domain/models/subscription_model.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
 import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
+import 'package:dd_study_22_ui/ui/roots/app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -128,6 +132,7 @@ class SearchState extends State<_Search> {
   @override
   Widget build(BuildContext context) {
     var viewModel = context.watch<_ViewModel>();
+    var appModel = context.watch<AppViewModel>();
     updated = false;
     return Scaffold(
         body: Padding(
@@ -203,6 +208,7 @@ class SearchState extends State<_Search> {
                                         text = "Follow";
                                       });
                                       updated = true;
+                                      appModel.getPosts();
                                     } else {
                                       viewModel.subscribe(
                                           viewModel.showedUsers[listIndex].id);
@@ -210,6 +216,7 @@ class SearchState extends State<_Search> {
                                         text = "Unfollow";
                                       });
                                       updated = true;
+                                      appModel.getPosts();
                                     }
                                   },
                                 ),

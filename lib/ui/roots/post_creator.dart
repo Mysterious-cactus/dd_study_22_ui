@@ -148,10 +148,7 @@ class _ViewModel extends ChangeNotifier {
 class PostCreatorState extends State<_PostCreator> {
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
     var viewModel = context.watch<_ViewModel>();
-    var itemCount = viewModel._imageFiles.length;
     return Scaffold(
       extendBody: true,
       appBar: AppBar(

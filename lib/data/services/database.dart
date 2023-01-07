@@ -11,15 +11,15 @@ class DB {
   DB._();
   static final DB instance = DB._();
   static late Database _db;
-  static bool _initialized = false;
+  static bool initialized = false;
 
   Future init() async {
-    if (!_initialized) {
+    if (!initialized) {
       var databasePath = await getDatabasesPath();
-      var path = join(databasePath, "db_v1.0.13.db");
+      var path = join(databasePath, "db_v1.0.15.db");
 
       _db = await openDatabase(path, version: 1, onCreate: _createDB);
-      _initialized = true;
+      initialized = true;
     }
   }
 
@@ -119,6 +119,7 @@ class DB {
 
   Future<void> createUpdateRange<T extends DbModel>(Iterable<T> values,
       {bool Function(T oldItem, T newItem)? updateCond}) async {
+    cleanTable<T>();
     var batch = DB._db.batch();
 
     for (var row in values) {
@@ -134,7 +135,8 @@ class DB {
         batch.update(_dbName(T), data, where: "id = ?", whereArgs: [row.id]);
       }
     }
-
-    await batch.commit(noResult: true);
+    try {
+      await batch.commit(noResult: true);
+    } on Exception {}
   }
 }

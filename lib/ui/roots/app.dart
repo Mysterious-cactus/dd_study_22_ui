@@ -1,8 +1,14 @@
+import 'package:dd_study_22_ui/data/services/data_service.dart';
+import 'package:dd_study_22_ui/data/services/sync_service.dart';
+import 'package:dd_study_22_ui/domain/models/post_model.dart';
+import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
+import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
 import 'package:dd_study_22_ui/ui/common/bottom_tabs.dart';
 import 'package:dd_study_22_ui/ui/navigation/tab_navigator.dart';
 import 'package:dd_study_22_ui/ui/roots/post_creator.dart';
+import 'package:dd_study_22_ui/ui/roots/tab_home/post_detail.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 
@@ -13,6 +19,8 @@ import '../../../internal/config/shared_prefs.dart';
 
 class AppViewModel extends ChangeNotifier {
   BuildContext context;
+  final _api = RepositoryModule.apiRepository();
+  final _dataService = DataService();
   AppViewModel({required this.context}) {
     asyncInit();
   }
@@ -46,6 +54,20 @@ class AppViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<PostModel>? _posts;
+  List<PostModel>? get posts => _posts;
+  set posts(List<PostModel>? val) {
+    _posts = val;
+    notifyListeners();
+  }
+
+  List<ProfilePostModel>? _currentPosts;
+  List<ProfilePostModel>? get currentPosts => _currentPosts;
+  set currentPosts(List<ProfilePostModel>? val) {
+    _currentPosts = val;
+    notifyListeners();
+  }
+
   Image? _avatar;
   Image? get avatar => _avatar;
   set avatar(Image? val) {
@@ -55,18 +77,43 @@ class AppViewModel extends ChangeNotifier {
 
   void asyncInit() async {
     user = await SharedPrefs.getStoredUser();
-    var img =
-        await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
-            .load("$avatarUrl${user!.avatarLink}?v=1");
-    avatar = Image.memory(
-      img.buffer.asUint8List(),
-      fit: BoxFit.fill,
-    );
+    //var img =
+    //    await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
+    //        .load("$avatarUrl${user!.avatarLink}?v=1");
+    //avatar = Image.memory(
+    //  img.buffer.asUint8List(),
+    //  fit: BoxFit.fill,
+    //);
+    getPosts();
+    getCurrentUserPosts();
+    avatar = Image.network("$avatarUrl${user!.avatarLink}");
+  }
+
+  void getPosts() async {
+    try {
+      await SyncService().syncPosts();
+      posts = await _dataService.getPosts();
+    } on DioError {
+      posts = null;
+    }
+  }
+
+  void getCurrentUserPosts() async {
+    try {
+      currentPosts = await _api.getCurrentUserPosts();
+    } on DioError {
+      currentPosts = null;
+    }
   }
 
   void toPostCreator(BuildContext bc) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (__) => PostCreatorState.create(bc)));
+  }
+
+  void toPostDetail(String? postId) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (__) => PostDetail.create(postId)));
   }
 }
 
@@ -76,7 +123,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var viewModel = context.watch<AppViewModel>();
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -100,6 +146,7 @@ class App extends StatelessWidget {
                 FloatingActionButtonLocation.centerDocked,
             floatingActionButton: FittedBox(
               child: FloatingActionButton(
+                heroTag: UniqueKey(),
                 onPressed: () => viewModel.toPostCreator(context),
                 child: const Icon(Icons.add),
               ),

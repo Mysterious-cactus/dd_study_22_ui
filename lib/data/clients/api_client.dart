@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
+import 'package:dd_study_22_ui/domain/models/comment_model.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
@@ -29,6 +30,12 @@ abstract class ApiClient {
   @GET("/api/User/GetUsers")
   Future<List<User>> getUsers();
 
+  @GET("/api/Post/GetPostById")
+  Future<PostModel> getPostById(@Query("id") String postId);
+
+  @GET("/api/User/GetUserById")
+  Future<User> getUserById(@Query("userId") String userId);
+
   @POST("/api/Attach/UploadFiles")
   Future<List<AttachMeta>> uploadTemp(
       {@Part(name: "files") required List<File> files});
@@ -44,4 +51,7 @@ abstract class ApiClient {
 
   @POST("/api/Subscription/UnSubscribe")
   Future unSubscribe(@Query("fromWhom") String fromWhom);
+
+  @POST("/api/Comment/CreateComment")
+  Future createComment(@Body() CommentModel model);
 }

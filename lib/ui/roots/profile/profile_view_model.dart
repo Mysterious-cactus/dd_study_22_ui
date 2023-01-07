@@ -7,7 +7,6 @@ import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
 import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
 import 'package:dd_study_22_ui/ui/common/cam_widget.dart';
 import 'package:dd_study_22_ui/ui/roots/app.dart';
-import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +14,7 @@ import 'package:provider/provider.dart';
 class ProfileViewModel extends ChangeNotifier {
   final _api = RepositoryModule.apiRepository();
   final BuildContext context;
+
   ProfileViewModel({required this.context}) {
     asyncInit();
     var appmodel = context.read<AppViewModel>();
@@ -31,7 +31,6 @@ class ProfileViewModel extends ChangeNotifier {
 
   Future asyncInit() async {
     user = await SharedPrefs.getStoredUser();
-    posts = await getPosts();
   }
 
   String? _imagePath;
@@ -42,23 +41,11 @@ class ProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<ProfilePostModel>? _posts;
-  List<ProfilePostModel>? get posts => _posts;
-  set posts(List<ProfilePostModel>? val) {
-    _posts = val;
-    notifyListeners();
-  }
-
   Map<int, int> pager = <int, int>{};
 
   void onPageChanged(int listIndex, int pageIndex) {
     pager[listIndex] = pageIndex;
     notifyListeners();
-  }
-
-  Future<List<ProfilePostModel>> getPosts() async {
-    var p = await _api.getCurrentUserPosts();
-    return p;
   }
 
   Future changePhoto() async {
@@ -84,8 +71,8 @@ class ProfileViewModel extends ChangeNotifier {
         await _api.addAvatarToUser(t.first);
 
         var img =
-            await NetworkAssetBundle(Uri.parse("$baseUrl${user!.avatarLink}"))
-                .load("$baseUrl${user!.avatarLink}?v=1");
+            await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
+                .load("$avatarUrl${user!.avatarLink}?v=1");
         var avImage = Image.memory(img.buffer.asUint8List());
 
         appmodel.avatar = avImage;

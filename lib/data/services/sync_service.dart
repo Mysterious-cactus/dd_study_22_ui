@@ -16,7 +16,6 @@ class SyncService {
     var posts = postModels
         .map((e) => Post.fromJson(e.toJson()).copyWith(authorId: e.author.id))
         .toList();
-
     await _dataService.rangeUpdateEntities(authors);
     await _dataService.rangeUpdateEntities(posts);
     await _dataService.rangeUpdateEntities(postContents);

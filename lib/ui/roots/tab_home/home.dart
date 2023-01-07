@@ -1,26 +1,19 @@
 import 'package:dd_study_22_ui/data/services/data_service.dart';
 import 'package:dd_study_22_ui/data/services/sync_service.dart';
-import 'package:dd_study_22_ui/domain/models/post.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
-import 'package:dd_study_22_ui/ui/navigation/tab_navigator.dart';
 import 'package:dd_study_22_ui/ui/roots/app.dart';
-import 'package:dd_study_22_ui/ui/roots/post_creator.dart';
-import 'package:dd_study_22_ui/ui/roots/profile/profile.dart';
-import 'package:dd_study_22_ui/ui/roots/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/services/auth_service.dart';
-
 class _ViewModel extends ChangeNotifier {
   BuildContext context;
-  final _authService = AuthService();
   final _dataService = DataService();
-  final _lvc = ScrollController();
+  //final _lvc = ScrollController();
+  var appmodel;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -32,7 +25,7 @@ class _ViewModel extends ChangeNotifier {
   _ViewModel({required this.context}) {
     asyncInit();
 
-    _lvc.addListener(() {
+    /*_lvc.addListener(() {
       var max = _lvc.position.maxScrollExtent;
       var current = _lvc.offset;
       var percent = (current / max * 100);
@@ -40,12 +33,15 @@ class _ViewModel extends ChangeNotifier {
         if (!isLoading) {
           isLoading = true;
           Future.delayed(const Duration(seconds: 1)).then((value) {
-            posts = <PostModel>[...posts!, ...posts!];
+            appmodel.posts = <PostModel>[
+              ...appmodel.posts!,
+              ...appmodel.posts!
+            ];
             isLoading = false;
           });
         }
       }
-    });
+    });*/
   }
 
   User? _user;
@@ -53,20 +49,6 @@ class _ViewModel extends ChangeNotifier {
 
   set user(User? val) {
     _user = val;
-    notifyListeners();
-  }
-
-  Image? _avatar;
-  Image? get avatar => _avatar;
-  set avatar(Image? val) {
-    _avatar = val;
-    notifyListeners();
-  }
-
-  List<PostModel>? _posts;
-  List<PostModel>? get posts => _posts;
-  set posts(List<PostModel>? val) {
-    _posts = val;
     notifyListeners();
   }
 
@@ -81,37 +63,17 @@ class _ViewModel extends ChangeNotifier {
 
   void asyncInit() async {
     user = await SharedPrefs.getStoredUser();
-    var img =
-        await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
-            .load("$avatarUrl${user!.avatarLink}?v=1");
-    avatar = Image.memory(
-      img.buffer.asUint8List(),
-      fit: BoxFit.fill,
-    );
-    await SyncService().syncPosts();
-    posts = await _dataService.getPosts();
   }
 
-  void obclick() {
+  /*void obclick() {
     var offset = _lvc.offset;
 
     _lvc.animateTo(0,
         duration: const Duration(seconds: 1), curve: Curves.easeInCubic);
-  }
-
-  void toProfile(BuildContext bc) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (__) => Profile.create()));
-  }
-
-  void toSearch(BuildContext bc) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (__) => SearchState.create()));
-  }
+  }*/
 
   void toPostDetail(String? postId) {
-    Navigator.of(context)
-        .pushNamed(TabNavigatorRoutes.postDetails, arguments: postId);
+    appmodel.toPostDetail(postId);
   }
 }
 
@@ -121,31 +83,31 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var viewModel = context.watch<_ViewModel>();
-    var appmodel = context.read<AppViewModel>();
-    viewModel.avatar = appmodel.avatar;
+    viewModel.appmodel = context.watch<AppViewModel>();
+    viewModel.appmodel.getPosts();
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var itemCount = viewModel.posts?.length ?? 0;
+    var itemCount = viewModel.appmodel.posts?.length ?? 0;
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
         //backgroundColor: Color.fromARGB(255, 0, 117, 201),
-        leading: (viewModel.avatar != null)
+        leading: (viewModel.appmodel.avatar != null)
             ? Row(children: [
                 const Spacer(),
                 CircleAvatar(
-                  backgroundImage: viewModel.avatar?.image,
+                  backgroundImage: viewModel.appmodel.avatar?.image,
                 )
               ])
             : null,
         title: Text(viewModel.user == null ? "Hi" : viewModel.user!.name),
       ),
       body: Container(
-          child: viewModel.posts == null
+          child: viewModel.appmodel.posts == null
               ? const Center(child: CircularProgressIndicator())
               : Column(
                   children: [
-                    (viewModel.posts!.isEmpty)
+                    (viewModel.appmodel.posts!.isEmpty)
                         ? Expanded(
                             child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -166,10 +128,10 @@ class Home extends StatelessWidget {
                           ))
                         : Expanded(
                             child: ListView.separated(
-                            controller: viewModel._lvc,
+                            //controller: viewModel._lvc,
                             itemBuilder: (listContext, listIndex) {
                               Widget res;
-                              var posts = viewModel.posts;
+                              var posts = viewModel.appmodel.posts;
                               if (posts != null) {
                                 var post = posts[listIndex];
                                 res = GestureDetector(
@@ -201,9 +163,7 @@ class Home extends StatelessWidget {
                                                 clipBehavior: Clip.hardEdge,
                                                 child: CircleAvatar(
                                                   backgroundImage: NetworkImage(
-                                                      avatarUrl +
-                                                          post.author
-                                                              .avatarLink),
+                                                      "$avatarUrl${post.author.avatarLink}"),
                                                 ),
                                               ),
                                               const Padding(
@@ -274,7 +234,7 @@ class Home extends StatelessWidget {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
+                                                  CrossAxisAlignment.center,
                                               children: [
                                                 IconButton(
                                                     onPressed: () {},
@@ -282,8 +242,22 @@ class Home extends StatelessWidget {
                                                         .favorite_outline)),
                                                 IconButton(
                                                     onPressed: () {},
-                                                    icon: const Icon(
-                                                        Icons.comment_outlined))
+                                                    icon: const Icon(Icons
+                                                        .comment_outlined)),
+                                                Text(
+                                                  (post.comments != null
+                                                          ? post
+                                                              .comments!.length
+                                                          : 0)
+                                                      .toString(),
+                                                  textAlign: TextAlign.left,
+                                                  style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Color.fromARGB(
+                                                          255, 65, 28, 130),
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
                                               ]),
                                         ),
                                       ],
