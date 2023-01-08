@@ -112,7 +112,7 @@ class _ViewModel extends ChangeNotifier {
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(1901, 1),
-        lastDate: DateTime(2020));
+        lastDate: DateTime(2024));
     if (picked != null && picked != selectedDate) {
       selectedDate = picked;
       _date.value = TextEditingValue(text: formatter.format(picked));
@@ -154,7 +154,7 @@ class Register extends StatelessWidget {
               InputDatePickerFormField(
                   initialDate: DateTime.now(),
                   firstDate: DateTime(1901, 1),
-                  lastDate: DateTime(2023, 1)),
+                  lastDate: DateTime(2024, 1)),
               TextField(
                   controller: viewModel.passwTec,
                   obscureText: true,

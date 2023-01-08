@@ -18,6 +18,7 @@ class ProfileViewModel extends ChangeNotifier {
   ProfileViewModel({required this.context}) {
     asyncInit();
     var appmodel = context.read<AppViewModel>();
+    appmodel.getCurrentUserPosts();
     appmodel.addListener(() {
       avatar = appmodel.avatar;
     });
@@ -50,7 +51,7 @@ class ProfileViewModel extends ChangeNotifier {
 
   Future changePhoto() async {
     var appmodel = context.read<AppViewModel>();
-    await Navigator.of(context).push(MaterialPageRoute(
+    await Navigator.of(appmodel.context).push(MaterialPageRoute(
       builder: (newContext) => Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(backgroundColor: Colors.black),
@@ -68,15 +69,19 @@ class ProfileViewModel extends ChangeNotifier {
       avatar = null;
       var t = await _api.uploadTemp(files: [File(_imagePath!)]);
       if (t.isNotEmpty) {
-        await _api.addAvatarToUser(t.first);
-
-        var img =
-            await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
-                .load("$avatarUrl${user!.avatarLink}?v=1");
-        var avImage = Image.memory(img.buffer.asUint8List());
-
-        appmodel.avatar = avImage;
+        await _api
+            .addAvatarToUser(t.first)
+            .whenComplete(() => _addAvatar(appmodel));
       }
     }
+  }
+
+  void _addAvatar(AppViewModel appmodel) async {
+    var img =
+        await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
+            .load("$avatarUrl${user!.avatarLink}?v=1");
+    var avImage = Image.memory(img.buffer.asUint8List());
+
+    appmodel.avatar = avImage;
   }
 }

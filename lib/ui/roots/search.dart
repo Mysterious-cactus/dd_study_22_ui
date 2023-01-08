@@ -176,7 +176,7 @@ class SearchState extends State<_Search> {
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 5,
+                          flex: 7,
                           child: Row(children: [
                             CircleAvatar(
                                 backgroundImage: NetworkImage(
@@ -192,7 +192,7 @@ class SearchState extends State<_Search> {
                           ]),
                         ),
                         Expanded(
-                          flex: 5,
+                          flex: 3,
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [

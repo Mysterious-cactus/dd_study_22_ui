@@ -26,4 +26,9 @@ abstract class ApiRepository {
   Future<User> getUserById(String userId);
   Future<PostModel> getPostById(String postId);
   Future createComment(CommentModel model);
+  Future addLikeToPost(String postId);
+  Future addLikeToComment(String commentId);
+  Future removeLikeFromPost(String postId);
+  Future removeLikeFromComment(String commentId);
+  Future<List<String>> getCommentLikes(String commentId);
 }

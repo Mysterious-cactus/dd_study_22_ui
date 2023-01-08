@@ -24,12 +24,14 @@ class DataService {
               .toList();
       if (author != null) {
         res.add(PostModel(
-          id: post.id,
-          author: author,
-          contents: contents,
-          description: post.description,
-          created: post.created,
-        ));
+            id: post.id,
+            author: author,
+            contents: contents,
+            description: post.description,
+            created: post.created,
+            commentCount: post.commentCount,
+            likeCount: post.likeCount,
+            likedByMe: post.likedByMe));
       }
     }
 

@@ -6,7 +6,7 @@ import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
 import 'package:dd_study_22_ui/ui/common/bottom_tabs.dart';
 import 'package:dd_study_22_ui/ui/navigation/tab_navigator.dart';
 import 'package:dd_study_22_ui/ui/roots/post_creator.dart';
-import 'package:dd_study_22_ui/ui/roots/tab_home/post_detail.dart';
+import 'package:dd_study_22_ui/ui/roots/post_detail.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -84,8 +84,8 @@ class AppViewModel extends ChangeNotifier {
     //  img.buffer.asUint8List(),
     //  fit: BoxFit.fill,
     //);
-    getPosts();
-    getCurrentUserPosts();
+    //getPosts();
+    //getCurrentUserPosts();
     avatar = Image.network("$avatarUrl${user!.avatarLink}");
   }
 
@@ -106,6 +106,18 @@ class AppViewModel extends ChangeNotifier {
     }
   }
 
+  void addLikeToPost(String? postId) async {
+    if (postId != null) {
+      await _api.addLikeToPost(postId);
+    }
+  }
+
+  void removeLikeFromPost(String? postId) async {
+    if (postId != null) {
+      await _api.removeLikeFromPost(postId);
+    }
+  }
+
   void toPostCreator(BuildContext bc) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (__) => PostCreatorState.create(bc)));
@@ -118,11 +130,15 @@ class AppViewModel extends ChangeNotifier {
 }
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
-
+  App({Key? key}) : super(key: key);
+  bool updated = false;
   @override
   Widget build(BuildContext context) {
     var viewModel = context.watch<AppViewModel>();
+    if (!updated) {
+      viewModel.getPosts();
+      updated = true;
+    }
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -174,7 +190,7 @@ class App extends StatelessWidget {
   static create() {
     return ChangeNotifierProvider(
       create: (BuildContext context) => AppViewModel(context: context),
-      child: const App(),
+      child: App(),
     );
   }
 

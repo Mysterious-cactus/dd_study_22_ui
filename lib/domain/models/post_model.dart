@@ -13,6 +13,9 @@ class PostModel {
   List<PostContent> contents;
   List<GetCommentRequestModel>? comments;
   DateTime created;
+  int likeCount;
+  int commentCount;
+  int likedByMe;
 
   PostModel({
     required this.id,
@@ -20,6 +23,9 @@ class PostModel {
     required this.author,
     required this.contents,
     required this.created,
+    required this.likeCount,
+    required this.commentCount,
+    required this.likedByMe,
     this.comments,
   });
 

@@ -9,7 +9,6 @@ import 'package:dio/dio.dart';
 
 class CreateUserService {
   final ApiRepository _api = RepositoryModule.apiRepository();
-  final DataService _dataService = DataService();
 
   Future registerUser(String? name, String? email, DateTime? birthDate,
       String? password, String? retryPassword) async {

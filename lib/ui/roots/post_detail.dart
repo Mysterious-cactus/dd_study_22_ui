@@ -4,6 +4,7 @@ import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
 import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
+import 'package:dd_study_22_ui/ui/roots/app.dart';
 import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +33,8 @@ class _ViewModel extends ChangeNotifier {
 
   _ViewModel({required this.context, this.postId}) {
     asyncInit();
-    getPostById();
+    getPostById().whenComplete(() => getCommentLikes());
+
     commentTec.addListener(() {
       state = state.copyWith(comment: commentTec.text);
     });
@@ -59,6 +61,13 @@ class _ViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /* List<List<String>> _commentLikes = [];
+  List<List<String>> get commentLikes => _commentLikes;
+  set commentLikes(List<List<String>> val) {
+    _commentLikes = val;
+    notifyListeners();
+  }*/
+
   Map<int, int> pager = <int, int>{};
   void onPageChanged(int listIndex, int pageIndex) {
     pager[listIndex] = pageIndex;
@@ -80,6 +89,48 @@ class _ViewModel extends ChangeNotifier {
       await _api.createComment(
           CommentModel(commentText: state.comment!, postId: postId!));
       getPostById();
+    }
+  }
+
+  void addLikeToPost(String? postId) async {
+    if (postId != null) {
+      await _api.addLikeToPost(postId);
+      getPostById();
+    }
+  }
+
+  void removeLikeFromPost(String? postId) async {
+    if (postId != null) {
+      await _api.removeLikeFromPost(postId);
+      getPostById();
+    }
+  }
+
+  void addLikeToComment(String? commentId) async {
+    if (commentId != null) {
+      await _api.addLikeToComment(commentId);
+      notifyListeners();
+    }
+  }
+
+  void removeLikeFromComment(String? commentId) async {
+    if (commentId != null) {
+      await _api.removeLikeFromComment(commentId);
+      notifyListeners();
+    }
+  }
+
+  void getCommentLikes() async {
+    //if (commentId != null) {
+    //  commentLikes.add(await _api.getCommentLikes(commentId));
+    //} else {
+    //  commentLikes.add([]);
+    //}
+    if (post!.comments != null) {
+      for (int i = 0; i < post!.comments!.length; i++) {
+        post!.comments![i].likes =
+            await _api.getCommentLikes(post!.comments![i].id);
+      }
     }
   }
 
@@ -187,8 +238,28 @@ class PostDetail extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.favorite_outline)),
+                                  onPressed: () {
+                                    if (viewModel.post!.likedByMe == 0) {
+                                      viewModel
+                                          .addLikeToPost(viewModel.post!.id);
+                                      viewModel.post!.likedByMe = 1;
+                                    } else {
+                                      viewModel.removeLikeFromPost(
+                                          viewModel.post!.id);
+                                      viewModel.post!.likedByMe = 0;
+                                    }
+                                  },
+                                  icon: Icon(viewModel.post!.likedByMe == 0
+                                      ? Icons.favorite_outline
+                                      : Icons.favorite)),
+                              Text(
+                                viewModel.post!.likeCount.toString(),
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color.fromARGB(255, 65, 28, 130),
+                                    fontWeight: FontWeight.bold),
+                              ),
                               IconButton(
                                 onPressed: () {},
                                 icon: const Icon(Icons.comment_outlined),
@@ -218,6 +289,10 @@ class PostDetail extends StatelessWidget {
                   shrinkWrap: true,
                   itemBuilder: (listContext, listIndex) {
                     Widget res;
+                    var comment = viewModel.post!.comments![listIndex];
+                    viewModel.getCommentLikes();
+                    //viewModel.commentLikes.add([]);
+                    //comment.likes = List.from(viewModel._commentLikes);
                     res = Container(
                       decoration: const BoxDecoration(
                           color: Colors.white,
@@ -228,18 +303,17 @@ class PostDetail extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                            flex: 5,
+                            flex: 8,
                             child: Row(children: [
                               CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                      "$avatarUrl${viewModel.post!.comments![listIndex].author.avatarLink}")),
+                                      "$avatarUrl${comment.author.avatarLink}")),
                               const Padding(padding: EdgeInsets.only(left: 10)),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    viewModel
-                                        .post!.comments![listIndex].author.name,
+                                    comment.author.name,
                                     style: const TextStyle(
                                         fontSize: 14,
                                         color: Color.fromARGB(255, 65, 28, 130),
@@ -248,14 +322,49 @@ class PostDetail extends StatelessWidget {
                                   const Padding(
                                       padding: EdgeInsets.only(top: 5)),
                                   Text(
-                                    viewModel
-                                        .post!.comments![listIndex].commentText,
+                                    comment.commentText,
                                     style: const TextStyle(
                                         fontSize: 11,
                                         color: Color.fromARGB(255, 65, 28, 130),
                                         fontWeight: FontWeight.bold),
                                   )
                                 ],
+                              ),
+                            ]),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Row(children: [
+                              IconButton(
+                                  onPressed: () {
+                                    if (viewModel
+                                        .post!.comments![listIndex].likes
+                                        .contains(viewModel.user!.id)) {
+                                      viewModel.addLikeToComment(comment.id);
+                                      //viewModel.commentLikes[listIndex].add(viewModel.user!.id);
+                                    } else {
+                                      viewModel
+                                          .removeLikeFromComment(comment.id);
+                                      //viewModel.commentLikes[listIndex].remove(viewModel.user!.id);
+                                    }
+                                    viewModel.getCommentLikes();
+                                  },
+                                  icon: Icon(
+                                    !viewModel.post!.comments![listIndex].likes
+                                            .contains(viewModel.user!.id)
+                                        ? Icons.favorite_outline
+                                        : Icons.favorite,
+                                    size: 14,
+                                  )),
+                              Text(
+                                viewModel
+                                    .post!.comments![listIndex].likes.length
+                                    .toString(),
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Color.fromARGB(255, 65, 28, 130),
+                                    fontWeight: FontWeight.bold),
                               ),
                             ]),
                           ),

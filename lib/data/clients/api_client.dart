@@ -36,6 +36,9 @@ abstract class ApiClient {
   @GET("/api/User/GetUserById")
   Future<User> getUserById(@Query("userId") String userId);
 
+  @GET("/api/Like/GetCommentLikes")
+  Future<List<String>> getCommentLikes(@Query("commentId") String commentId);
+
   @POST("/api/Attach/UploadFiles")
   Future<List<AttachMeta>> uploadTemp(
       {@Part(name: "files") required List<File> files});
@@ -54,4 +57,16 @@ abstract class ApiClient {
 
   @POST("/api/Comment/CreateComment")
   Future createComment(@Body() CommentModel model);
+
+  @POST("/api/Like/AddLikeToPost")
+  Future addLikeToPost(@Query("postId") String postId);
+
+  @POST("/api/Like/AddLikeToCommentt")
+  Future addLikeToComment(@Query("commentId") String commentId);
+
+  @POST("/api/Like/RemoveLikeFromPost")
+  Future removeLikeFromPost(@Query("postId") String postId);
+
+  @POST("/api/Like/RemoveLikeFromComment")
+  Future removeLikeFromComment(@Query("commentId") String commentId);
 }

@@ -78,4 +78,21 @@ class ApiDataRepository extends ApiRepository {
 
   @override
   Future createComment(CommentModel model) => _api.createComment(model);
+
+  @override
+  Future addLikeToPost(String postId) => _api.addLikeToPost(postId);
+
+  @override
+  Future addLikeToComment(String commentId) => _api.addLikeToComment(commentId);
+
+  @override
+  Future removeLikeFromPost(String postId) => _api.removeLikeFromPost(postId);
+
+  @override
+  Future removeLikeFromComment(String commentId) =>
+      _api.removeLikeFromComment(commentId);
+
+  @override
+  Future<List<String>> getCommentLikes(String commentId) =>
+      _api.getCommentLikes(commentId);
 }

@@ -14,7 +14,8 @@ class Profile extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     var viewModel = context.watch<ProfileViewModel>();
-    var appmodel = context.read<AppViewModel>();
+    var appmodel = context.watch<AppViewModel>();
+    //appmodel.getCurrentUserPosts();
     // viewModel.appmodel = context.read<AppViewModel>();
     return Scaffold(
       appBar: AppBar(
@@ -255,10 +256,10 @@ class Profile extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    (appmodel.posts == null)
+                    (appmodel.currentPosts == null)
                         ? const Center(child: CircularProgressIndicator())
                         : Column(children: [
-                            Text((appmodel.posts!.length).toString(),
+                            Text((appmodel.currentPosts!.length).toString(),
                                 style: const TextStyle(
                                     fontSize: 16,
                                     color: Color.fromARGB(255, 65, 28, 130),
@@ -297,7 +298,7 @@ class Profile extends StatelessWidget {
                     ]),
                   ],
                 ))),
-        const Padding(padding: EdgeInsets.only(top: 4)),
+        const Padding(padding: EdgeInsets.only(top: 10)),
         BottomAppBar(
           child: Row(
             children: const [
@@ -314,8 +315,11 @@ class Profile extends StatelessWidget {
             ],
           ),
         ),
-        (appmodel.posts == null || viewModel.user == null)
-            ? const Center(child: CircularProgressIndicator())
+        (appmodel.currentPosts == null || viewModel.user == null)
+            ? const Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Center(child: CircularProgressIndicator()),
+              )
             : //Column(children: [
             ListView.separated(
                 //controller: viewModel._lvc,
@@ -323,105 +327,141 @@ class Profile extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (listContext, listIndex) {
                   Widget res;
-                  var posts = appmodel.posts;
+                  var posts = appmodel.currentPosts;
                   if (posts != null) {
                     var post = posts[listIndex];
-                    res = Container(
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          //border: Border.all(width: 1),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5.0),
-                          )),
-                      padding: const EdgeInsets.all(10),
-                      height: screenWidth,
-                      child: Column(
-                        children: [
-                          Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.deepPurple, width: 2),
-                                      borderRadius: BorderRadius.circular(100)),
-                                  clipBehavior: Clip.hardEdge,
-                                  child: CircleAvatar(
-                                    backgroundImage: viewModel.avatar?.image,
-                                  ),
-                                ),
-                                const Padding(
-                                    padding: EdgeInsets.only(left: 10)),
-                                Text(
-                                  viewModel.user!.name,
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Color.fromARGB(255, 65, 28, 130),
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ]),
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                          const Divider(
-                            color: Colors.deepPurple,
-                            thickness: 1,
-                            height: 1,
-                          ),
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                          Expanded(
-                            child: PageView.builder(
-                              onPageChanged: (value) =>
-                                  viewModel.onPageChanged(listIndex, value),
-                              itemCount: post.contents.length,
-                              itemBuilder: (pageContext, pageIndex) =>
+                    res = GestureDetector(
+                      onTap: () => appmodel.toPostDetail(post.id),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            //border: Border.all(width: 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5.0),
+                            )),
+                        padding: const EdgeInsets.all(10),
+                        height: screenWidth,
+                        child: Column(
+                          children: [
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
                                   Container(
-                                //color: Colors.yellow,
-                                child: Image(
-                                    image: NetworkImage(
-                                  "$avatarUrl${post.contents[pageIndex].contentLink}",
-                                )),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.deepPurple, width: 2),
+                                        borderRadius:
+                                            BorderRadius.circular(100)),
+                                    clipBehavior: Clip.hardEdge,
+                                    child: CircleAvatar(
+                                      backgroundImage: viewModel.avatar?.image,
+                                    ),
+                                  ),
+                                  const Padding(
+                                      padding: EdgeInsets.only(left: 10)),
+                                  Text(
+                                    viewModel.user!.name,
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Color.fromARGB(255, 65, 28, 130),
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ]),
+                            const Padding(padding: EdgeInsets.only(top: 10)),
+                            const Divider(
+                              color: Colors.deepPurple,
+                              thickness: 1,
+                              height: 1,
+                            ),
+                            const Padding(padding: EdgeInsets.only(top: 10)),
+                            Expanded(
+                              child: PageView.builder(
+                                onPageChanged: (value) =>
+                                    viewModel.onPageChanged(listIndex, value),
+                                itemCount: post.contents.length,
+                                itemBuilder: (pageContext, pageIndex) =>
+                                    Container(
+                                  //color: Colors.yellow,
+                                  child: Image(
+                                      image: NetworkImage(
+                                    "$avatarUrl${post.contents[pageIndex].contentLink}",
+                                  )),
+                                ),
                               ),
                             ),
-                          ),
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                          PageIndicator(
-                            count: post.contents.length,
-                            current: viewModel.pager[listIndex],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 15),
-                            child: Row(
-                              children: [
-                                Text(
-                                  post.description ?? "",
-                                  style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Color.fromARGB(255, 65, 28, 130),
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
+                            const Padding(padding: EdgeInsets.only(top: 10)),
+                            PageIndicator(
+                              count: post.contents.length,
+                              current: viewModel.pager[listIndex],
                             ),
-                          ),
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                          const Divider(
-                            color: Colors.deepPurple,
-                            thickness: 1,
-                            height: 1,
-                          ),
-                          SizedBox(
-                            height: screenHeight * 0.05,
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10, left: 15),
+                              child: Row(
                                 children: [
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.favorite_outline)),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.comment_outlined))
-                                ]),
-                          ),
-                        ],
+                                  Text(
+                                    post.description ?? "",
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Color.fromARGB(255, 65, 28, 130),
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Padding(padding: EdgeInsets.only(top: 10)),
+                            const Divider(
+                              color: Colors.deepPurple,
+                              thickness: 1,
+                              height: 1,
+                            ),
+                            SizedBox(
+                              height: screenHeight * 0.05,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          if (post.likedByMe == 0) {
+                                            appmodel.addLikeToPost(post.id);
+                                            post.likeCount += 1;
+                                          } else {
+                                            appmodel
+                                                .removeLikeFromPost(post.id);
+                                            post.likeCount -= 1;
+                                          }
+                                          post.likedByMe =
+                                              post.likedByMe == 0 ? 1 : 0;
+                                        },
+                                        icon: Icon(post.likedByMe == 0
+                                            ? Icons.favorite_outline
+                                            : Icons.favorite)),
+                                    Text(
+                                      post.likeCount.toString(),
+                                      textAlign: TextAlign.left,
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color:
+                                              Color.fromARGB(255, 65, 28, 130),
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    IconButton(
+                                        onPressed: () {},
+                                        icon:
+                                            const Icon(Icons.comment_outlined)),
+                                    Text(
+                                      post.commentCount.toString(),
+                                      textAlign: TextAlign.left,
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color:
+                                              Color.fromARGB(255, 65, 28, 130),
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ]),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   } else {
@@ -430,7 +470,9 @@ class Profile extends StatelessWidget {
                   return res;
                 },
                 separatorBuilder: (context, index) => const Divider(),
-                itemCount: appmodel.posts == null ? 1 : appmodel.posts!.length,
+                itemCount: appmodel.currentPosts == null
+                    ? 1
+                    : appmodel.currentPosts!.length,
               ),
 
         //]),

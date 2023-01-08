@@ -5,11 +5,14 @@ part 'get_comment_request_model.g.dart';
 
 @JsonSerializable()
 class GetCommentRequestModel {
+  final String id;
   final String commentText;
   final DateTime created;
   final User author;
+  List<String> likes = [];
 
   GetCommentRequestModel({
+    required this.id,
     required this.commentText,
     required this.created,
     required this.author,

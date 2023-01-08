@@ -6,12 +6,10 @@ import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
 import 'package:dd_study_22_ui/ui/roots/app.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class _ViewModel extends ChangeNotifier {
   BuildContext context;
-  final _dataService = DataService();
   //final _lvc = ScrollController();
   var appmodel;
 
@@ -237,19 +235,41 @@ class Home extends StatelessWidget {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 IconButton(
-                                                    onPressed: () {},
-                                                    icon: const Icon(Icons
-                                                        .favorite_outline)),
+                                                    onPressed: () {
+                                                      if (post.likedByMe == 0) {
+                                                        viewModel.appmodel
+                                                            .addLikeToPost(
+                                                                post.id);
+                                                      } else {
+                                                        viewModel.appmodel
+                                                            .removeLikeFromPost(
+                                                                post.id);
+                                                      }
+                                                      post.likedByMe =
+                                                          post.likedByMe == 0
+                                                              ? 1
+                                                              : 0;
+                                                    },
+                                                    icon: Icon(post.likedByMe ==
+                                                            0
+                                                        ? Icons.favorite_outline
+                                                        : Icons.favorite)),
+                                                Text(
+                                                  post.likeCount.toString(),
+                                                  textAlign: TextAlign.left,
+                                                  style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Color.fromARGB(
+                                                          255, 65, 28, 130),
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                                 IconButton(
                                                     onPressed: () {},
                                                     icon: const Icon(Icons
                                                         .comment_outlined)),
                                                 Text(
-                                                  (post.comments != null
-                                                          ? post
-                                                              .comments!.length
-                                                          : 0)
-                                                      .toString(),
+                                                  post.commentCount.toString(),
                                                   textAlign: TextAlign.left,
                                                   style: const TextStyle(
                                                       fontSize: 14,
@@ -269,8 +289,8 @@ class Home extends StatelessWidget {
                               }
                               return res;
                             },
-                            separatorBuilder: (context, index) =>
-                                const Divider(),
+                            separatorBuilder: (context, index) => const Padding(
+                                padding: EdgeInsets.only(top: 10)),
                             itemCount: itemCount,
                           )),
                     if (viewModel.isLoading) const LinearProgressIndicator()
