@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dd_study_22_ui/data/services/auth_service.dart';
-import 'package:dd_study_22_ui/data/services/data_service.dart';
 import 'package:dd_study_22_ui/domain/models/create_user_model.dart';
 import 'package:dd_study_22_ui/domain/repository/api_repository.dart';
 import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';

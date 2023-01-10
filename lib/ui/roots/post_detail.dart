@@ -4,7 +4,6 @@ import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
 import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
-import 'package:dd_study_22_ui/ui/roots/app.dart';
 import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +32,7 @@ class _ViewModel extends ChangeNotifier {
 
   _ViewModel({required this.context, this.postId}) {
     asyncInit();
-    getPostById().whenComplete(() => getCommentLikes());
+    getPostById();
 
     commentTec.addListener(() {
       state = state.copyWith(comment: commentTec.text);
@@ -81,6 +80,7 @@ class _ViewModel extends ChangeNotifier {
   Future getPostById() async {
     if (postId != null) {
       post = await _api.getPostById(postId!);
+      getCommentLikes();
     }
   }
 
@@ -95,28 +95,28 @@ class _ViewModel extends ChangeNotifier {
   void addLikeToPost(String? postId) async {
     if (postId != null) {
       await _api.addLikeToPost(postId);
-      getPostById();
+      notifyListeners();
+      //getPostById();
     }
   }
 
   void removeLikeFromPost(String? postId) async {
     if (postId != null) {
       await _api.removeLikeFromPost(postId);
-      getPostById();
+      notifyListeners();
+      //getPostById();
     }
   }
 
   void addLikeToComment(String? commentId) async {
     if (commentId != null) {
       await _api.addLikeToComment(commentId);
-      notifyListeners();
     }
   }
 
   void removeLikeFromComment(String? commentId) async {
     if (commentId != null) {
       await _api.removeLikeFromComment(commentId);
-      notifyListeners();
     }
   }
 
@@ -128,8 +128,9 @@ class _ViewModel extends ChangeNotifier {
     //}
     if (post!.comments != null) {
       for (int i = 0; i < post!.comments!.length; i++) {
-        post!.comments![i].likes =
-            await _api.getCommentLikes(post!.comments![i].id);
+        post!.comments![i].likes = await _api
+            .getCommentLikes(post!.comments![i].id)
+            .whenComplete(() => notifyListeners());
       }
     }
   }
@@ -243,10 +244,12 @@ class PostDetail extends StatelessWidget {
                                       viewModel
                                           .addLikeToPost(viewModel.post!.id);
                                       viewModel.post!.likedByMe = 1;
+                                      viewModel.post!.likeCount += 1;
                                     } else {
                                       viewModel.removeLikeFromPost(
                                           viewModel.post!.id);
                                       viewModel.post!.likedByMe = 0;
+                                      viewModel.post!.likeCount -= 1;
                                     }
                                   },
                                   icon: Icon(viewModel.post!.likedByMe == 0
@@ -290,7 +293,6 @@ class PostDetail extends StatelessWidget {
                   itemBuilder: (listContext, listIndex) {
                     Widget res;
                     var comment = viewModel.post!.comments![listIndex];
-                    viewModel.getCommentLikes();
                     //viewModel.commentLikes.add([]);
                     //comment.likes = List.from(viewModel._commentLikes);
                     res = Container(
@@ -337,7 +339,7 @@ class PostDetail extends StatelessWidget {
                             child: Row(children: [
                               IconButton(
                                   onPressed: () {
-                                    if (viewModel
+                                    if (!viewModel
                                         .post!.comments![listIndex].likes
                                         .contains(viewModel.user!.id)) {
                                       viewModel.addLikeToComment(comment.id);

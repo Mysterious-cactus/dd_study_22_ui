@@ -60,9 +60,9 @@ class _ViewModel extends ChangeNotifier {
       state = state.copyWith(email: emailTec.text);
     });
     //birthTec.addListener(() {
-    //state = state.copyWith(birthday: DateTime.now());
-    //});
     state = state.copyWith(birthday: DateTime.now());
+    //});
+    //state = state.copyWith(birthday: DateTime.now());
     passwTec.addListener(() {
       state = state.copyWith(password: passwTec.text);
     });
@@ -82,15 +82,15 @@ class _ViewModel extends ChangeNotifier {
     return (state.name?.isNotEmpty ?? false) &&
         (state.password?.isNotEmpty ?? false) &&
         (state.email?.isNotEmpty ?? false) &&
-        //(state.birthday?.toString().isNotEmpty ?? false) &&
-        (state.tryPassword?.isNotEmpty ?? false);
-    //(state.tryPassword == state.password);
+        (state.birthday?.toString().isNotEmpty ?? false) &&
+        (state.tryPassword?.isNotEmpty ?? false) &&
+        (state.tryPassword == state.password);
   }
 
   void register() async {
     try {
       await _createUserService
-          .registerUser(state.name, state.email, DateTime.now(), state.password,
+          .registerUser(state.name, state.email, state.birthday, state.password,
               state.tryPassword)
           .then((value) {
         AppNavigator.toAuth();
@@ -104,19 +104,10 @@ class _ViewModel extends ChangeNotifier {
     }
   }
 
-  DateTime selectedDate = DateTime.now();
+  //DateTime selectedDate = DateTime.now();
 
-  Future _selectDate(BuildContext context) async {
-    DateFormat formatter = DateFormat('dd/mm/yyyy');
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(1901, 1),
-        lastDate: DateTime(2024));
-    if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-      _date.value = TextEditingValue(text: formatter.format(picked));
-    }
+  void _selectDate(DateTime date) {
+    state = state.copyWith(birthday: date);
   }
 }
 
@@ -124,7 +115,7 @@ class Register extends StatelessWidget {
   const Register({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var viewModel = _ViewModel(context: context);
+    var viewModel = context.watch<_ViewModel>();
     return Scaffold(
       appBar: AppBar(
         leading:
@@ -152,6 +143,7 @@ class Register extends StatelessWidget {
               //  onTap: () => viewModel._selectDate(context),
               //  child:
               InputDatePickerFormField(
+                  onDateSubmitted: (value) => viewModel._selectDate(value),
                   initialDate: DateTime.now(),
                   firstDate: DateTime(1901, 1),
                   lastDate: DateTime(2024, 1)),
@@ -169,7 +161,8 @@ class Register extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: ElevatedButton(
-                    onPressed: viewModel.register,
+                    onPressed:
+                        viewModel.checkFields() ? viewModel.register : null,
                     child: const Text("Create account")),
               ),
             ]),

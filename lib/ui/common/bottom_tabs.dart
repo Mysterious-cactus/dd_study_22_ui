@@ -30,7 +30,8 @@ class BottomTabs extends StatelessWidget {
   BottomNavigationBarItem _buildItem(
       TabItemEnum tabItem, AppViewModel appmodel) {
     var isCurrent = currentTab == tabItem;
-    var color = isCurrent ? Colors.deepPurple[100] : Colors.white;
+    var color =
+        isCurrent ? const Color.fromARGB(255, 163, 142, 202) : Colors.white;
     Widget icon = Padding(
         padding: (tabItem.index < 2)
             ? const EdgeInsets.only(right: 30)

@@ -1,8 +1,7 @@
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/ui/roots/app.dart';
 import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
-import 'package:dd_study_22_ui/ui/roots/profile/profile_view_model.dart';
-import 'package:dd_study_22_ui/ui/roots/settings.dart';
+import 'package:dd_study_22_ui/ui/roots/tab_profile/profile/profile_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -25,10 +24,7 @@ class Profile extends StatelessWidget {
             IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const Settings()));
+                  appmodel.toSettings();
                 })
           ]),
       body: ListView(children: [

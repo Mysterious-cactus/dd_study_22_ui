@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';
@@ -77,6 +76,9 @@ class ProfileViewModel extends ChangeNotifier {
   }
 
   void _addAvatar(AppViewModel appmodel) async {
+    user = await _api.getUser();
+    await SharedPrefs.setStoredUser(user);
+    appmodel.user = user;
     var img =
         await NetworkAssetBundle(Uri.parse("$avatarUrl${user!.avatarLink}"))
             .load("$avatarUrl${user!.avatarLink}?v=1");

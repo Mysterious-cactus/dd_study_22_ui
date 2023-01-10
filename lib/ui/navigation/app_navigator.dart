@@ -1,16 +1,13 @@
 import 'package:dd_study_22_ui/ui/roots/app.dart';
-import 'package:dd_study_22_ui/ui/roots/tab_home/home.dart';
 import 'package:dd_study_22_ui/ui/roots/auth.dart';
 import 'package:dd_study_22_ui/ui/roots/loader.dart';
 import 'package:dd_study_22_ui/ui/roots/register.dart';
-import 'package:dd_study_22_ui/ui/roots/settings.dart';
 import 'package:flutter/material.dart';
 
 class NavigationRoutes {
   static const loaderWidget = "/";
   static const auth = "/auth";
   static const app = "/app";
-  static const userSettings = "/settings";
   static const register = "/register";
   static const postCreator = "/postCreator";
 }
@@ -42,10 +39,6 @@ class AppNavigator {
     return await key.currentState?.pushNamed(NavigationRoutes.postCreator);
   }
 
-  static Future toSettings() async {
-    return await key.currentState?.pushNamed(NavigationRoutes.userSettings);
-  }
-
   static Route<dynamic>? onGeneratedRoutes(RouteSettings settings, context) {
     switch (settings.name) {
       case NavigationRoutes.loaderWidget:
@@ -55,9 +48,6 @@ class AppNavigator {
         return PageRouteBuilder(pageBuilder: ((_, __, ___) => Auth.create()));
       case NavigationRoutes.app:
         return PageRouteBuilder(pageBuilder: ((_, __, ___) => App.create()));
-      case NavigationRoutes.userSettings:
-        return PageRouteBuilder(
-            pageBuilder: ((_, __, ___) => Settings.create()));
       case NavigationRoutes.register:
         return PageRouteBuilder(
             pageBuilder: ((_, __, ___) => Register.create()));

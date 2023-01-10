@@ -1,6 +1,3 @@
-import 'package:dd_study_22_ui/data/services/data_service.dart';
-import 'package:dd_study_22_ui/data/services/sync_service.dart';
-import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:dd_study_22_ui/internal/config/app_config.dart';
 import 'package:dd_study_22_ui/internal/config/shared_prefs.dart';

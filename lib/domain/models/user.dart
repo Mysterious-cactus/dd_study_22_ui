@@ -1,4 +1,3 @@
-import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:dd_study_22_ui/domain/db_model.dart';
 

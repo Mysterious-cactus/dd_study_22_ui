@@ -67,7 +67,7 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     var viewModel = _ViewModel(context: context);
     return Scaffold(
-        appBar: AppBar(title: const Text("Settings"), actions: []),
+        appBar: AppBar(title: const Text("Settings")),
         body: ListView(children: [
           const Padding(padding: EdgeInsets.only(top: 2)),
           ElevatedButton(

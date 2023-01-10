@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dd_study_22_ui/data/services/data_service.dart';
 import 'package:dd_study_22_ui/data/services/sync_service.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
@@ -7,6 +9,7 @@ import 'package:dd_study_22_ui/ui/common/bottom_tabs.dart';
 import 'package:dd_study_22_ui/ui/navigation/tab_navigator.dart';
 import 'package:dd_study_22_ui/ui/roots/post_creator.dart';
 import 'package:dd_study_22_ui/ui/roots/post_detail.dart';
+import 'package:dd_study_22_ui/ui/roots/settings.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -26,10 +29,10 @@ class AppViewModel extends ChangeNotifier {
   }
 
   final _navigationKeys = {
-    TabItemEnum.News: GlobalKey<NavigatorState>(),
-    TabItemEnum.Search: GlobalKey<NavigatorState>(),
-    TabItemEnum.Events: GlobalKey<NavigatorState>(),
-    TabItemEnum.Profile: GlobalKey<NavigatorState>(),
+    TabItemEnum.home: GlobalKey<NavigatorState>(),
+    TabItemEnum.search: GlobalKey<NavigatorState>(),
+    TabItemEnum.events: GlobalKey<NavigatorState>(),
+    TabItemEnum.profile: GlobalKey<NavigatorState>(),
   };
 
   var _currentTab = TabEnums.defTab;
@@ -58,7 +61,9 @@ class AppViewModel extends ChangeNotifier {
   List<PostModel>? get posts => _posts;
   set posts(List<PostModel>? val) {
     _posts = val;
-    notifyListeners();
+    try {
+      notifyListeners();
+    } on FlutterError {}
   }
 
   List<ProfilePostModel>? _currentPosts;
@@ -84,9 +89,13 @@ class AppViewModel extends ChangeNotifier {
     //  img.buffer.asUint8List(),
     //  fit: BoxFit.fill,
     //);
-    //getPosts();
+
     //getCurrentUserPosts();
-    avatar = Image.network("$avatarUrl${user!.avatarLink}");
+    if (user?.avatarLink == null) {
+      avatar = Image.asset('assets/default.jpg');
+    } else {
+      avatar = Image.network("$avatarUrl${user!.avatarLink}");
+    }
   }
 
   void getPosts() async {
@@ -126,6 +135,11 @@ class AppViewModel extends ChangeNotifier {
   void toPostDetail(String? postId) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (__) => PostDetail.create(postId)));
+  }
+
+  void toSettings() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (__) => Settings.create()));
   }
 }
 

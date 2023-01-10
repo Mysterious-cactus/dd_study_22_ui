@@ -5,7 +5,6 @@ import 'package:dd_study_22_ui/domain/models/comment_model.dart';
 import 'package:dd_study_22_ui/domain/models/create_post_request.dart';
 import 'package:dd_study_22_ui/domain/models/post_model.dart';
 import 'package:dd_study_22_ui/domain/models/profile_post_model.dart';
-import 'package:dd_study_22_ui/domain/models/subscription_model.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -61,7 +60,7 @@ abstract class ApiClient {
   @POST("/api/Like/AddLikeToPost")
   Future addLikeToPost(@Query("postId") String postId);
 
-  @POST("/api/Like/AddLikeToCommentt")
+  @POST("/api/Like/AddLikeToComment")
   Future addLikeToComment(@Query("commentId") String commentId);
 
   @POST("/api/Like/RemoveLikeFromPost")

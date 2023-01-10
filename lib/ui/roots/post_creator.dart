@@ -9,6 +9,7 @@ import 'package:dd_study_22_ui/internal/dependencies/repository_module.dart';
 import 'package:dd_study_22_ui/ui/navigation/app_navigator.dart';
 import 'package:dd_study_22_ui/ui/common/cam_widget.dart';
 import 'package:dd_study_22_ui/ui/extensions/snack_bar_ext.dart';
+import 'package:dd_study_22_ui/ui/roots/app.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -115,6 +116,8 @@ class _ViewModel extends ChangeNotifier {
       await _createPostService
           .createPost(user!.id, state.description, _images)
           .then((value) {
+        var appmodel = context.read<AppViewModel>();
+        appmodel.getCurrentUserPosts();
         AppNavigator.toHome();
       });
     } on NoNetworkException {

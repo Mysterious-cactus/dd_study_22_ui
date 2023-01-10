@@ -1,6 +1,4 @@
 import 'package:dd_study_22_ui/domain/models/attach_meta.dart';
-import 'package:dd_study_22_ui/domain/models/post_content.dart';
-import 'package:dd_study_22_ui/domain/models/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'create_post_request.g.dart';
