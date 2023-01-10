@@ -118,6 +118,7 @@ class Register extends StatelessWidget {
     var viewModel = context.watch<_ViewModel>();
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Create account"),
         leading:
             Row(mainAxisAlignment: MainAxisAlignment.start, children: const [
           IconButton(
